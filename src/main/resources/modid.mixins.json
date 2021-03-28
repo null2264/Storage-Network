@@ -6,7 +6,7 @@
   "mixins": [
   ],
   "client": [
-    "ExampleMixin"
+    "com.null2264.storagenetwork.mixin.ExampleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
