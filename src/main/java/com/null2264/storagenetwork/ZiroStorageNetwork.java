@@ -1,14 +1,19 @@
 package com.null2264.storagenetwork;
 
+import com.null2264.storagenetwork.registry.BlockEntityRegistry;
+import com.null2264.storagenetwork.registry.BlockRegistry;
 import net.fabricmc.api.ModInitializer;
 
-public class ZiroStorageNetwork implements ModInitializer {
+public class ZiroStorageNetwork implements ModInitializer
+{
+
+	public static final String MODID = "zirostoragenetwork";
+
 	@Override
 	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
-
+		BlockRegistry.register();
+		BlockEntityRegistry.register();
 		System.out.println("Hello Fabric world!");
 	}
+
 }
