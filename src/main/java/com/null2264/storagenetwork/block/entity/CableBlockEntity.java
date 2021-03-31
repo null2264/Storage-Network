@@ -5,10 +5,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 
-public class MasterBlockEntity extends BlockEntity
+public class CableBlockEntity extends BlockEntity
 {
-    public MasterBlockEntity() {
-        super(BlockEntityRegistry.MASTER_BLOCK_ENTITY);
+    public CableBlockEntity() {
+        super(BlockEntityRegistry.CABLE_BLOCK_ENTITY);
     }
 
     @Override
