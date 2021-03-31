@@ -2,6 +2,7 @@ package com.null2264.storagenetwork.block;
 
 import com.null2264.storagenetwork.block.entity.MasterBlockEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
@@ -31,6 +32,11 @@ public class MasterBlock extends BlockWithEntity
         return new MasterBlockEntity();
     }
 
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
     public void getItems() {
         if (inv != null) {
             ArrayList<ItemStack> items = new ArrayList<>();
@@ -46,22 +52,33 @@ public class MasterBlock extends BlockWithEntity
         }
     }
 
-    public void getInventory(World world, BlockPos pos) {
+    public Inventory getInventory(World world, BlockPos pos) {
+        // Get inventory from a position
         if (!world.isClient) {
-            this.inv = (Inventory) world.getBlockEntity(pos);
+            return (Inventory) world.getBlockEntity(pos);
         }
+        return null;
     }
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack item) {
-
+        if (!world.isClient) {
+            // Get neighbor block's inventory upon placing
+            BlockPos[] positions = new BlockPos[]{pos.up(), pos.down(), pos.north(), pos.south(), pos.west(), pos.east()};
+            for (BlockPos position : positions) {
+                Inventory inv = getInventory(world, position);
+                if (inv != null)
+                    this.inv = inv;
+            }
+        }
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
         /* Get neighbor's inventory if exist when it placed */
-        getInventory(world, fromPos);
+        if (!world.isClient)
+            this.inv = getInventory(world, fromPos);
     }
 
     @SuppressWarnings("deprecation")
