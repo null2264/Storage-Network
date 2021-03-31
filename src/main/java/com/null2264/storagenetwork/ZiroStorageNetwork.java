@@ -6,7 +6,6 @@ import net.fabricmc.api.ModInitializer;
 
 public class ZiroStorageNetwork implements ModInitializer
 {
-
 	public static final String MODID = "zirostoragenetwork";
 
 	@Override
