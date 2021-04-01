@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -39,7 +40,7 @@ public class MasterBlock extends BlockWithEntity
         return BlockRenderType.MODEL;
     }
 
-    public void getItems(Inventory inv) {
+    public void getItems(Inventory inv, PlayerEntity player) {
         // Get array of items from inv
         if (inv != null) {
             ArrayList<ItemStack> items = new ArrayList<>();
@@ -49,8 +50,11 @@ public class MasterBlock extends BlockWithEntity
                     items.add(item);
             }
             if (!items.isEmpty())
+                player.sendMessage(Text.of("---"), false);
                 for (ItemStack item:items)
-                    System.out.printf("%s: %s (%s)%n", inv.size(), item.getName().getString(), item.getCount());
+                    player.sendMessage(
+                        Text.of(String.format("%s: %s (%s)", inv.size(), item.getName().getString(), item.getCount())),
+                        false);
         }
     }
 
@@ -134,7 +138,7 @@ public class MasterBlock extends BlockWithEntity
             CompoundTag selfTag = new CompoundTag();
             if (selfEntity != null) {
                 selfTag = selfEntity.toTag(selfTag);
-                getItems(getInventory(world, selfTag));
+                getItems(getInventory(world, selfTag), player);
             }
         }
         return ActionResult.SUCCESS;
