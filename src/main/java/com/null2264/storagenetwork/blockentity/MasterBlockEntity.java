@@ -17,7 +17,6 @@ public class MasterBlockEntity extends BlockEntity
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         dimPos = new DimPos(tag);
-        System.out.println(tag.toString());
         super.fromTag(state, tag);
     }
 
@@ -25,7 +24,6 @@ public class MasterBlockEntity extends BlockEntity
     public CompoundTag toTag(CompoundTag tag) {
         if (dimPos != null)
             dimPos.toTag(tag);
-        System.out.println(tag.toString());
         return super.toTag(tag);
     }
 }
