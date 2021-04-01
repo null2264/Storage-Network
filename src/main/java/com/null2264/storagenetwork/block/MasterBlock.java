@@ -1,6 +1,6 @@
 package com.null2264.storagenetwork.block;
 
-import com.null2264.storagenetwork.block.entity.MasterBlockEntity;
+import com.null2264.storagenetwork.blockentity.MasterBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -37,11 +37,11 @@ public class MasterBlock extends BlockWithEntity
         return BlockRenderType.MODEL;
     }
 
-    public void getItems() {
+    public void getItems(Inventory inv) {
+        // Get array of items from inv
         if (inv != null) {
             ArrayList<ItemStack> items = new ArrayList<>();
-            int i;
-            for (i = 0; i < inv.size(); i++) {
+            for (int i = 0; i < inv.size(); i++) {
                 ItemStack item = inv.getStack(i);
                 if (!item.isEmpty())
                     items.add(item);
@@ -55,7 +55,12 @@ public class MasterBlock extends BlockWithEntity
     public Inventory getInventory(World world, BlockPos pos) {
         // Get inventory from a position
         if (!world.isClient) {
-            return (Inventory) world.getBlockEntity(pos);
+            try {
+                return (Inventory) world.getBlockEntity(pos);
+            } catch (ClassCastException e) {
+                // e.printStackTrace();
+                return null;
+            }
         }
         return null;
     }
@@ -85,7 +90,7 @@ public class MasterBlock extends BlockWithEntity
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
-            getItems();
+            getItems(this.inv);
         }
         return ActionResult.SUCCESS;
     }

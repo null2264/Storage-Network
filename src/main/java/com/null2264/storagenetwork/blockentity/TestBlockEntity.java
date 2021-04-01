@@ -1,4 +1,4 @@
-package com.null2264.storagenetwork.block.entity;
+package com.null2264.storagenetwork.blockentity;
 
 import com.null2264.storagenetwork.api.ImplementedInventory;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;

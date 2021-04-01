@@ -1,12 +1,11 @@
 package com.null2264.storagenetwork.block;
 
-import com.null2264.storagenetwork.block.entity.TestBlockEntity;
+import com.null2264.storagenetwork.blockentity.TestBlockEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;

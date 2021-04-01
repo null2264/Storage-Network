@@ -1,6 +1,7 @@
-package com.null2264.storagenetwork.block;
+package com.null2264.storagenetwork.block.cable;
 
-import com.null2264.storagenetwork.block.entity.CableBlockEntity;
+import com.null2264.storagenetwork.blockentity.cable.CableBlockEntity;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -10,8 +11,8 @@ import net.minecraft.world.BlockView;
 
 public class CableBlock extends BlockWithEntity
 {
-    public CableBlock(Settings settings) {
-        super(settings);
+    public CableBlock() {
+        super(FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
     }
 
     public BlockEntity createBlockEntity(BlockView world) {
@@ -26,5 +27,4 @@ public class CableBlock extends BlockWithEntity
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
         return VoxelShapes.cuboid(0.34f, 0.34f, 0.34f, 0.66f, 0.66f, 0.66f);
     }
-
 }
