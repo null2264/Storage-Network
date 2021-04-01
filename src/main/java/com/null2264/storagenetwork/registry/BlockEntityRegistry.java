@@ -1,9 +1,9 @@
 package com.null2264.storagenetwork.registry;
 
-import com.null2264.storagenetwork.blockentity.cable.CableBlockEntity;
+import com.null2264.storagenetwork.blockentity.cables.CableBlockEntity;
 import com.null2264.storagenetwork.blockentity.MasterBlockEntity;
 import com.null2264.storagenetwork.blockentity.TestBlockEntity;
-import com.null2264.storagenetwork.blockentity.cable.CableLinkBlockEntity;
+import com.null2264.storagenetwork.blockentity.cables.CableLinkBlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.registry.Registry;
 

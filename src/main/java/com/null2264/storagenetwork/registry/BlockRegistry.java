@@ -1,9 +1,9 @@
 package com.null2264.storagenetwork.registry;
 
-import com.null2264.storagenetwork.block.cable.CableBlock;
+import com.null2264.storagenetwork.block.cables.CableBlock;
 import com.null2264.storagenetwork.block.MasterBlock;
 import com.null2264.storagenetwork.block.TestBlock;
-import com.null2264.storagenetwork.block.cable.CableLinkBlock;
+import com.null2264.storagenetwork.block.cables.CableLinkBlock;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;

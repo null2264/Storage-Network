@@ -1,6 +1,6 @@
-package com.null2264.storagenetwork.block.cable;
+package com.null2264.storagenetwork.block.cables;
 
-import com.null2264.storagenetwork.blockentity.cable.CableBlockEntity;
+import com.null2264.storagenetwork.blockentity.cables.CableBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;

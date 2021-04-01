@@ -1,4 +1,4 @@
-package com.null2264.storagenetwork.blockentity.cable;
+package com.null2264.storagenetwork.blockentity.cables;
 
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import net.minecraft.block.BlockState;

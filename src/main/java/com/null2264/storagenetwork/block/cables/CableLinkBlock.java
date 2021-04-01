@@ -1,6 +1,6 @@
-package com.null2264.storagenetwork.block.cable;
+package com.null2264.storagenetwork.block.cables;
 
-import com.null2264.storagenetwork.blockentity.cable.CableLinkBlockEntity;
+import com.null2264.storagenetwork.blockentity.cables.CableLinkBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.world.BlockView;
 
