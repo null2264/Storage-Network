@@ -1,5 +1,6 @@
 package com.null2264.storagenetwork.block;
 
+import com.null2264.storagenetwork.api.DimPos;
 import com.null2264.storagenetwork.blockentity.MasterBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -10,6 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -52,6 +54,21 @@ public class MasterBlock extends BlockWithEntity
         }
     }
 
+    public Inventory getInventory(World world, CompoundTag tag) {
+        // Get inventory from a position
+        if (!world.isClient) {
+            DimPos dimPos = new DimPos(tag);
+            BlockPos pos = dimPos.getBlockPos();
+            try {
+                return (Inventory) world.getBlockEntity(pos);
+            } catch (ClassCastException e) {
+                // e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
     public Inventory getInventory(World world, BlockPos pos) {
         // Get inventory from a position
         if (!world.isClient) {
@@ -69,11 +86,23 @@ public class MasterBlock extends BlockWithEntity
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack item) {
         if (!world.isClient) {
             // Get neighbor block's inventory upon placing
-            BlockPos[] positions = new BlockPos[]{pos.up(), pos.down(), pos.north(), pos.south(), pos.west(), pos.east()};
+            BlockEntity selfEntity = world.getBlockEntity(pos);
+            CompoundTag selfTag = new CompoundTag();
+            if (selfEntity != null)
+                selfTag = selfEntity.toTag(selfTag);
+
+            BlockPos[] positions = new BlockPos[]{
+                pos.up(), pos.down(),
+                pos.north(), pos.south(),
+                pos.west(), pos.east()
+            };
             for (BlockPos position : positions) {
                 Inventory inv = getInventory(world, position);
-                if (inv != null)
-                    this.inv = inv;
+                DimPos invPos;
+                if (inv != null) {
+                     invPos = new DimPos(world, position);
+                     invPos.toTag(selfTag);
+                }
             }
         }
     }
@@ -82,15 +111,31 @@ public class MasterBlock extends BlockWithEntity
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
         /* Get neighbor's inventory if exist when it placed */
-        if (!world.isClient)
-            this.inv = getInventory(world, fromPos);
+        if (!world.isClient) {
+            BlockEntity selfEntity = world.getBlockEntity(pos);
+            CompoundTag selfTag = new CompoundTag();
+            if (selfEntity != null) {
+                selfTag = selfEntity.toTag(selfTag);
+                Inventory inv = getInventory(world, fromPos);
+                DimPos invPos;
+                if (inv != null) {
+                    invPos = new DimPos(world, fromPos);
+                    selfEntity.fromTag(state, invPos.toTag(selfTag));
+                }
+            }
+        }
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
-            getItems(this.inv);
+            BlockEntity selfEntity = world.getBlockEntity(pos);
+            CompoundTag selfTag = new CompoundTag();
+            if (selfEntity != null) {
+                selfTag = selfEntity.toTag(selfTag);
+                getItems(getInventory(world, selfTag));
+            }
         }
         return ActionResult.SUCCESS;
     }

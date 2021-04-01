@@ -14,11 +14,7 @@ public class DimPos
 
     public DimPos(CompoundTag tag) {
         // Fetch DimPos from nbt tag
-        int x = tag.getInt("X");
-        int y = tag.getInt("Y");
-        int z = tag.getInt("Z");
-        pos = new BlockPos(x, y, z);
-        dimension = tag.getString("dimension");
+        fromTag(tag);
     }
 
     public DimPos(World world, BlockPos pos) {
@@ -41,5 +37,26 @@ public class DimPos
 
     public BlockPos getBlockPos() {
         return pos;
+    }
+
+    public CompoundTag toTag(CompoundTag tag) {
+        tag.putInt("X", getBlockPos().getX());
+        tag.putInt("Y", getBlockPos().getY());
+        tag.putInt("Z", getBlockPos().getZ());
+        tag.putString("dimension", dimension);
+        return tag;
+    }
+
+    public void fromTag(CompoundTag tag) {
+        int x = tag.getInt("X");
+        int y = tag.getInt("Y");
+        int z = tag.getInt("Z");
+        this.pos = new BlockPos(x, y, z);
+        this.dimension = tag.getString("dimension");
+    }
+
+    @Override
+    public String toString() {
+        return "[ BlockPos = " + getBlockPos().toString() + ", dimension = " + dimension + ", world = " + (getWorld() != null ? getWorld().toString() : null);
     }
 }
