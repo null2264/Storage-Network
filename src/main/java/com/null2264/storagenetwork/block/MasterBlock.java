@@ -54,7 +54,8 @@ public class MasterBlock extends ModBlockWithEntity
                 DimPos invPos;
                 if (getInventoryPos(world, position) != null) {
                     invPos = new DimPos(world, position);
-                    selfEntity.fromTag(state, invPos.toTag(selfTag));
+                    if (selfEntity != null)
+                        selfEntity.fromTag(state, invPos.toTag(selfTag));
                 }
             }
         }
