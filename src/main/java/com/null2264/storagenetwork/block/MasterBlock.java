@@ -40,22 +40,17 @@ public class MasterBlock extends BlockWithEntity
         return BlockRenderType.MODEL;
     }
 
-    public void getItems(Inventory inv, PlayerEntity player) {
-        // Get array of items from inv
+    public ArrayList<ItemStack> getItems(Inventory inv) {
+        // Get array of items from inv and return the array list
+        ArrayList<ItemStack> items = new ArrayList<>();
         if (inv != null) {
-            ArrayList<ItemStack> items = new ArrayList<>();
             for (int i = 0; i < inv.size(); i++) {
                 ItemStack item = inv.getStack(i);
                 if (!item.isEmpty())
                     items.add(item);
             }
-            if (!items.isEmpty())
-                player.sendMessage(Text.of("---"), false);
-                for (ItemStack item:items)
-                    player.sendMessage(
-                        Text.of(String.format("%s: %s (%s)", inv.size(), item.getName().getString(), item.getCount())),
-                        false);
         }
+        return items;
     }
 
     public Inventory getInventory(World world, CompoundTag tag) {
@@ -138,7 +133,13 @@ public class MasterBlock extends BlockWithEntity
             CompoundTag selfTag = new CompoundTag();
             if (selfEntity != null) {
                 selfTag = selfEntity.toTag(selfTag);
-                getItems(getInventory(world, selfTag), player);
+                ArrayList<ItemStack> items = getItems(getInventory(world, selfTag));
+                if (!items.isEmpty())
+                    player.sendMessage(Text.of("---"), false);
+                for (ItemStack item:items)
+                    player.sendMessage(
+                        Text.of(String.format("%s: %s (%s)", inv.size(), item.getName().getString(), item.getCount())),
+                        false);
             }
         }
         return ActionResult.SUCCESS;
