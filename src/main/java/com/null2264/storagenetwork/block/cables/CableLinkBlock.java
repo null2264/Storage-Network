@@ -6,6 +6,7 @@ import net.minecraft.world.BlockView;
 
 public class CableLinkBlock extends CableBlock
 {
+    // TODO: Move inventory stuff from masterBlock to here
     public CableLinkBlock() {
         super();
     }

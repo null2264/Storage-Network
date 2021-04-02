@@ -1,5 +1,6 @@
 package com.null2264.storagenetwork.block.cables;
 
+import com.null2264.storagenetwork.block.ModBlockWithEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
@@ -9,7 +10,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 
-public class CableBlock extends BlockWithEntity
+public class CableBlock extends ModBlockWithEntity
 {
     public CableBlock() {
         super(FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
