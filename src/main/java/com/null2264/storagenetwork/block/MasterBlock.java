@@ -134,12 +134,13 @@ public class MasterBlock extends BlockWithEntity
             if (selfEntity != null) {
                 selfTag = selfEntity.toTag(selfTag);
                 ArrayList<ItemStack> items = getItems(getInventory(world, selfTag));
-                if (!items.isEmpty())
+                if (!items.isEmpty()) {
                     player.sendMessage(Text.of("---"), false);
-                for (ItemStack item:items)
-                    player.sendMessage(
-                        Text.of(String.format("%s: %s (%s)", inv.size(), item.getName().getString(), item.getCount())),
-                        false);
+                    for (ItemStack item:items)
+                        player.sendMessage(
+                            Text.of(String.format("- %s (%s)", item.getName().getString(), item.getCount())),
+                            false);
+                }
             }
         }
         return ActionResult.SUCCESS;
