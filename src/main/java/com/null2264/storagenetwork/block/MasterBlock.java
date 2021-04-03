@@ -8,7 +8,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
@@ -87,21 +86,18 @@ public class MasterBlock extends ModBlockWithEntity
             CompoundTag selfTag = new CompoundTag();
             if (selfEntity != null) {
                 selfTag = selfEntity.toTag(selfTag);
-                ArrayList<ItemStack> items = getItems(getInventory(world, selfTag));
-                ArrayList<ItemStack> mergedItems = new ArrayList<>();
-                if (!items.isEmpty()) {
-                    // Merge item together
-                    for (ItemStack item : items)
-                        merge(item.copy(), mergedItems);
+                ArrayList<ItemStack> items = new ArrayList<>();
+                // Merge item together
+                for (ItemStack item : getItems(getInventory(world, selfTag)))
+                    merge(item.copy(), items);
 
-                    // Send merged items as message
-                    player.sendMessage(Text.of("---"), false);
-                    for (ItemStack item : mergedItems) {
-                        player.sendMessage(
-                            Text.of(String.format("- %s (%s)", item.getName().getString(), item.getCount())),
-                            false
-                        );
-                    }
+                // Send merged items as message
+                player.sendMessage(Text.of("---"), false);
+                for (ItemStack item : items) {
+                    player.sendMessage(
+                        Text.of(String.format("- %s (%s)", item.getName().getString(), item.getCount())),
+                        false
+                    );
                 }
             }
         }
