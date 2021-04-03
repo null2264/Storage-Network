@@ -86,18 +86,21 @@ public class MasterBlock extends ModBlockWithEntity
             CompoundTag selfTag = new CompoundTag();
             if (selfEntity != null) {
                 selfTag = selfEntity.toTag(selfTag);
-                ArrayList<ItemStack> items = new ArrayList<>();
+
                 // Merge item together
+                ArrayList<ItemStack> items = new ArrayList<>();
                 for (ItemStack item : getItems(getInventory(world, selfTag)))
                     merge(item.copy(), items);
 
                 // Send merged items as message
-                player.sendMessage(Text.of("---"), false);
-                for (ItemStack item : items) {
-                    player.sendMessage(
-                        Text.of(String.format("- %s (%s)", item.getName().getString(), item.getCount())),
-                        false
-                    );
+                if (!items.isEmpty()) {
+                    player.sendMessage(Text.of("---"), false);
+                    for (ItemStack item : items) {
+                        player.sendMessage(
+                            Text.of(String.format("- %s (%s)", item.getName().getString(), item.getCount())),
+                            false
+                        );
+                    }
                 }
             }
         }
