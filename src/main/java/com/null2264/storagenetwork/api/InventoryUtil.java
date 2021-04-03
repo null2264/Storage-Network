@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class InventoryUtil
 {
@@ -26,19 +27,6 @@ public class InventoryUtil
             }
         }
         return null;
-    }
-
-    public static ArrayList<ItemStack> getItems(Inventory inv) {
-        // Get array of items from inv and return the array list
-        ArrayList<ItemStack> items = new ArrayList<>();
-        if (inv != null) {
-            for (int i = 0; i < inv.size(); i++) {
-                ItemStack item = inv.getStack(i);
-                if (!item.isEmpty())
-                    items.add(item);
-            }
-        }
-        return items;
     }
 
     public static Inventory getInventory(World world, CompoundTag tag) {
@@ -61,5 +49,18 @@ public class InventoryUtil
             }
         }
         return null;
+    }
+
+    public static ArrayList<ItemStack> getItems(Inventory inv) {
+        // Get array of items from inv and return the array list
+        ArrayList<ItemStack> items = new ArrayList<>();
+        if (inv != null) {
+            for (int i = 0; i < inv.size(); i++) {
+                ItemStack item = inv.getStack(i);
+                if (!item.isEmpty())
+                    items.add(item);
+            }
+        }
+        return items;
     }
 }
