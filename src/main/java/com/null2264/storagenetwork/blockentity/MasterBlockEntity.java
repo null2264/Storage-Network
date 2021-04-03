@@ -12,18 +12,13 @@ public class MasterBlockEntity extends BlockEntity
         super(BlockEntityRegistry.MASTER_BLOCK_ENTITY);
     }
 
-    DimPos dimPos = null;
-
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
-        dimPos = new DimPos(tag);
         super.fromTag(state, tag);
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        if (dimPos != null)
-            dimPos.toTag(tag);
         return super.toTag(tag);
     }
 }

@@ -28,10 +28,13 @@ public class CableLinkBlockEntity extends BlockEntity
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
+        storagePos = new DimPos(tag);
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
+        if (storagePos != null)
+            storagePos.toTag(tag);
         return super.toTag(tag);
     }
 }
