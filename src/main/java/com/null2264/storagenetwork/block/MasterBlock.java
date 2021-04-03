@@ -15,8 +15,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
+import static com.null2264.storagenetwork.api.InventoryUtil.*;
 
 import java.util.ArrayList;
 
@@ -45,15 +48,10 @@ public class MasterBlock extends ModBlockWithEntity
             if (selfEntity != null)
                 selfTag = selfEntity.toTag(selfTag);
 
-            BlockPos[] positions = new BlockPos[]{
-                pos.up(), pos.down(),
-                pos.north(), pos.south(),
-                pos.west(), pos.east()
-            };
-            for (BlockPos position : positions) {
+            for (Direction dir : Direction.values()) {
                 DimPos invPos;
-                if (getInventoryPos(world, position) != null) {
-                    invPos = new DimPos(world, position);
+                if (getInventoryPos(world, pos.offset(dir)) != null) {
+                    invPos = new DimPos(world, pos.offset(dir));
                     if (selfEntity != null)
                         selfEntity.fromTag(state, invPos.toTag(selfTag));
                 }
