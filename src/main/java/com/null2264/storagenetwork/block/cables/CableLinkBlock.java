@@ -3,7 +3,6 @@ package com.null2264.storagenetwork.block.cables;
 import com.null2264.storagenetwork.api.DimPos;
 import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableLinkBlockEntity;
-import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
