@@ -1,7 +1,6 @@
 package com.null2264.storagenetwork.blockentity.cables;
 
 import com.null2264.storagenetwork.api.DimPos;
-import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -13,7 +12,7 @@ import java.util.Objects;
 public class CableBaseBlockEntity extends BlockEntity
 {
     public CableBaseBlockEntity(BlockEntityType<?> type) {
-        super(BlockEntityRegistry.CABLE_BLOCK_ENTITY);
+        super(type);
     }
 
     public DimPos storagePos = null;
