@@ -7,7 +7,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class InventoryUtil
 {
@@ -20,22 +19,16 @@ public class InventoryUtil
 
     public static BlockPos getInventoryPos(World world, BlockPos pos) {
         // Get inventory position if any
-        if (!world.isClient) {
-            //noinspection RedundantCast
-            if ((Inventory) world.getBlockEntity(pos) != null) {
-                return pos;
-            }
+        if (getInventory(world, pos) != null) {
+            return pos;
         }
         return null;
     }
 
     public static Inventory getInventory(World world, CompoundTag tag) {
         // Get inventory from tag
-        if (!world.isClient) {
-            BlockPos pos = getInventoryPos(tag);
-            return getInventory(world, pos);
-        }
-        return null;
+        BlockPos pos = getInventoryPos(tag);
+        return getInventory(world, pos);
     }
 
     public static Inventory getInventory(World world, BlockPos pos) {
@@ -45,7 +38,6 @@ public class InventoryUtil
                 return (Inventory) world.getBlockEntity(pos);
             } catch (ClassCastException e) {
                 // e.printStackTrace();
-                return null;
             }
         }
         return null;
