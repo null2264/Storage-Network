@@ -1,9 +1,12 @@
 package com.null2264.storagenetwork.block.cables;
 
 import com.null2264.storagenetwork.api.DimPos;
+import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableLinkBlockEntity;
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,6 +22,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.null2264.storagenetwork.api.InventoryUtil.*;
 import static com.null2264.storagenetwork.api.ItemUtil.merge;
@@ -59,10 +63,24 @@ public class CableLinkBlock extends CableBlock
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
         /* Get neighbor's inventory if exist when it placed */
         if (!world.isClient) {
-            BlockEntity selfEntity = world.getBlockEntity(pos);
+            CableBaseBlockEntity selfEntity = (CableBaseBlockEntity) world.getBlockEntity(pos);
             CompoundTag selfTag = new CompoundTag();
             if (selfEntity != null) {
                 selfTag = selfEntity.toTag(selfTag);
+                // Check if cable already have inventory attached
+                if (selfEntity.hasInventory()) {
+                    // Check block "properties" if the block position is the same as cable's inventory position
+                    if (Objects.equals(selfEntity.storagePos.getBlockPos(), fromPos)) {
+                        // Update cable's DimPos if block no longer an inventory block
+                        BlockState fromBlock = world.getBlockState(fromPos);
+                        if (fromBlock.isOf(Blocks.AIR) || getInventoryPos(world, fromPos) == null) {
+                            // TODO: Find replacement instead of always update DimPos to "invalid" value
+                            DimPos invPos = new DimPos(world, new BlockPos(0, 0, 0));
+                            selfEntity.fromTag(state, invPos.toTag(selfTag));
+                        }
+                    }
+                    return;
+                }
                 DimPos invPos;
                 if (getInventoryPos(world, fromPos) != null) {
                     invPos = new DimPos(world, fromPos);
