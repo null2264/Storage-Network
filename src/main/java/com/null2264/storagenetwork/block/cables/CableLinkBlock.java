@@ -28,13 +28,27 @@ import static com.null2264.storagenetwork.api.ItemUtil.merge;
 
 public class CableLinkBlock extends CableBlock
 {
-    // TODO: Move inventory stuff from masterBlock to here
+    // TODO: Makes cable connect to other cables/master block
     public CableLinkBlock() {
         super();
     }
 
     public BlockEntity createBlockEntity(BlockView world) {
         return new CableLinkBlockEntity();
+    }
+
+    public DimPos findInventory(World world, BlockPos pos) {
+        // Find neighbors' inventory
+        if (!world.isClient) {
+            for (Direction dir : Direction.values()) {
+                if (getInventoryPos(world, pos.offset(dir)) != null) {
+                    return new DimPos(world, pos.offset(dir));
+                }
+            }
+        }
+        // Return "invalid" DimPos
+        // TODO: Find "invalid" position for 1.17, since its height & depth limit is changed in 1.17
+        return new DimPos(world, new BlockPos(0,0,0));
     }
 
     @Override
@@ -46,14 +60,10 @@ public class CableLinkBlock extends CableBlock
             if (selfEntity != null)
                 selfTag = selfEntity.toTag(selfTag);
 
-            for (Direction dir : Direction.values()) {
-                DimPos invPos;
-                if (getInventoryPos(world, pos.offset(dir)) != null) {
-                    invPos = new DimPos(world, pos.offset(dir));
-                    if (selfEntity != null)
-                        selfEntity.fromTag(state, invPos.toTag(selfTag));
-                }
-            }
+            DimPos invPos = findInventory(world, pos);
+            if (invPos != null)
+                if (selfEntity != null)
+                    selfEntity.fromTag(state, invPos.toTag(selfTag));
         }
     }
 
@@ -73,8 +83,7 @@ public class CableLinkBlock extends CableBlock
                         // Update cable's DimPos if block no longer an inventory block
                         BlockState fromBlock = world.getBlockState(fromPos);
                         if (fromBlock.isOf(Blocks.AIR) || getInventoryPos(world, fromPos) == null) {
-                            // TODO: Find replacement instead of always update DimPos to "invalid" value
-                            DimPos invPos = new DimPos(world, new BlockPos(0, 0, 0));
+                            DimPos invPos = findInventory(world, pos);
                             selfEntity.fromTag(state, invPos.toTag(selfTag));
                         }
                     }
