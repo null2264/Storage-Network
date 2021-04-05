@@ -17,7 +17,7 @@ import static com.null2264.storagenetwork.ZiroStorageNetwork.MODID;
 
 public class BlockRegistry {
     public static final Block TEST_BLOCK = new TestBlock(FabricBlockSettings.of(Material.METAL).strength(4.0f));
-    public static final Block MASTER_BLOCK = new MasterBlock(FabricBlockSettings.of(Material.METAL).strength(4.0f));
+    public static final Block MASTER_BLOCK = new MasterBlock();
     public static final Block CABLE_BLOCK = new CableBlock();
     public static final Block CABLE_LINK_BLOCK = new CableLinkBlock();
 
