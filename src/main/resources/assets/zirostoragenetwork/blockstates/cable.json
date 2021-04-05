@@ -1,5 +1,11 @@
 {
-    "variants": {
-        "": { "model": "zirostoragenetwork:block/cable" }
-    }
+    "multipart": [
+        {"apply": {"model": "zirostoragenetwork:block/cable"}},
+        {"when": {"north": true}, "apply": {"model": "zirostoragenetwork:block/cable_side"}},
+        {"when": {"south": true}, "apply": {"model": "zirostoragenetwork:block/cable_side", "y": 180}},
+        {"when": {"east": true}, "apply": {"model": "zirostoragenetwork:block/cable_side", "y": 90}},
+        {"when": {"west": true}, "apply": {"model": "zirostoragenetwork:block/cable_side", "y": -90}},
+        {"when": {"up": true}, "apply": {"model": "zirostoragenetwork:block/cable_side", "x": -90}},
+        {"when": {"down": true}, "apply": {"model": "zirostoragenetwork:block/cable_side", "x": 90}}
+    ]
 }

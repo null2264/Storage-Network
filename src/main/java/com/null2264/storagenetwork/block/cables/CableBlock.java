@@ -1,17 +1,45 @@
 package com.null2264.storagenetwork.block.cables;
 
+import com.google.common.collect.Maps;
+import com.null2264.storagenetwork.Tags;
 import com.null2264.storagenetwork.block.ModBlockWithEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableBlockEntity;
+import com.null2264.storagenetwork.registry.BlockRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldAccess;
+
+import java.util.Map;
+import java.util.Objects;
 
 public class CableBlock extends ModBlockWithEntity
 {
+    public static final BooleanProperty NORTH = ConnectingBlock.NORTH;
+    public static final BooleanProperty EAST = ConnectingBlock.EAST;
+    public static final BooleanProperty SOUTH = ConnectingBlock.SOUTH;
+    public static final BooleanProperty WEST = ConnectingBlock.WEST;
+    public static final BooleanProperty UP = ConnectingBlock.UP;
+    public static final BooleanProperty DOWN = ConnectingBlock.DOWN;
+
+    protected static final Map<Direction, BooleanProperty> FACING_PROPERTIES = Util.make(Maps.newEnumMap(Direction.class), (enumMap) -> {
+        enumMap.put(Direction.NORTH, NORTH);
+        enumMap.put(Direction.EAST, EAST);
+        enumMap.put(Direction.SOUTH, SOUTH);
+        enumMap.put(Direction.WEST, WEST);
+        enumMap.put(Direction.UP, UP);
+        enumMap.put(Direction.DOWN, DOWN);
+    });
+
     public CableBlock() {
         super(FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
     }
@@ -27,5 +55,32 @@ public class CableBlock extends ModBlockWithEntity
     @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
         return VoxelShapes.cuboid(0.34f, 0.34f, 0.34f, 0.66f, 0.66f, 0.66f);
+    }
+
+    public boolean canConnect(WorldAccess world, BlockPos pos) {
+        Block block = world.getBlockState(pos).getBlock();
+        return block.isIn(Tags.CABLES) || block.is(BlockRegistry.MASTER_BLOCK);
+    }
+
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        WorldAccess world = ctx.getWorld();
+        BlockPos pos = ctx.getBlockPos();
+
+        return Objects.requireNonNull(super.getPlacementState(ctx))
+            .with(NORTH, canConnect(world, pos.north()))
+            .with(EAST, canConnect(world, pos.east()))
+            .with(SOUTH, canConnect(world, pos.south()))
+            .with(WEST, canConnect(world, pos.west()))
+            .with(UP, canConnect(world, pos.up()))
+            .with(DOWN, canConnect(world, pos.down()));
+    }
+
+    @SuppressWarnings("deprecation")
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
+        return state.with(FACING_PROPERTIES.get(direction), canConnect(world, posFrom));
+    }
+
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN);
     }
 }

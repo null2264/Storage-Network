@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -28,7 +29,6 @@ import static com.null2264.storagenetwork.api.ItemUtil.merge;
 
 public class CableLinkBlock extends CableBlock
 {
-    // TODO: Makes cable connect to other cables/master block
     public CableLinkBlock() {
         super();
     }
@@ -49,6 +49,10 @@ public class CableLinkBlock extends CableBlock
         // Return "invalid" DimPos
         // TODO: Find "invalid" position for 1.17, since its height & depth limit is changed in 1.17
         return new DimPos(world, new BlockPos(0,0,0));
+    }
+
+    public boolean canConnect(WorldAccess world, BlockPos pos) {
+        return super.canConnect(world, pos) || getInventory((World) world, pos) != null;
     }
 
     @Override
