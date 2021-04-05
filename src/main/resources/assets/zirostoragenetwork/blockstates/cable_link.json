@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "zirostoragenetwork:block/cable" }
+        "": { "model": "zirostoragenetwork:block/cable_link" }
     }
 }
