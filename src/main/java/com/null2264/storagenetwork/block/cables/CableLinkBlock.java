@@ -37,22 +37,26 @@ public class CableLinkBlock extends CableBlock
         return new CableLinkBlockEntity();
     }
 
-    public DimPos findInventory(World world, BlockPos pos) {
+    public void findInventory(World world, BlockEntity cableEntity, BlockPos pos, BlockState cableState, CompoundTag cableTag) {
         // Find neighbors' inventory
+        // "invalid" DimPos (Coordinate "x:0, y:0, z:0")
+        // TODO: Find "invalid" position for 1.17, since its height & depth limit is changed in 1.17
+        DimPos invPos = new DimPos(world, new BlockPos(0,0,0));
         if (!world.isClient) {
             for (Direction dir : Direction.values()) {
                 if (getInventoryPos(world, pos.offset(dir)) != null) {
-                    return new DimPos(world, pos.offset(dir));
+                    if (cableState != null) {
+                        // Since its inventory, canConnect always return true
+                        cableState = cableState.with(FACING_PROPERTIES.get(dir), true);
+                    }
+                    invPos = new DimPos(world, pos.offset(dir));
+                    // Break the loop, we already got an inventory block
+                    break;
                 }
             }
         }
-        // Return "invalid" DimPos
-        // TODO: Find "invalid" position for 1.17, since its height & depth limit is changed in 1.17
-        return new DimPos(world, new BlockPos(0,0,0));
-    }
-
-    public boolean canConnect(WorldAccess world, BlockPos pos) {
-        return super.canConnect(world, pos) || getInventory((World) world, pos) != null;
+        world.setBlockState(pos, cableState);
+        cableEntity.fromTag(cableState, invPos.toTag(cableTag));
     }
 
     @Override
@@ -61,13 +65,10 @@ public class CableLinkBlock extends CableBlock
             // Get neighbor block's inventory upon placing
             BlockEntity selfEntity = world.getBlockEntity(pos);
             CompoundTag selfTag = new CompoundTag();
-            if (selfEntity != null)
+            if (selfEntity != null) {
                 selfTag = selfEntity.toTag(selfTag);
-
-            DimPos invPos = findInventory(world, pos);
-            if (invPos != null)
-                if (selfEntity != null)
-                    selfEntity.fromTag(state, invPos.toTag(selfTag));
+                findInventory(world, selfEntity, pos, state, selfTag);
+            }
         }
     }
 
@@ -87,8 +88,7 @@ public class CableLinkBlock extends CableBlock
                         // Update cable's DimPos if block no longer an inventory block
                         BlockState fromBlock = world.getBlockState(fromPos);
                         if (fromBlock.isOf(Blocks.AIR) || getInventoryPos(world, fromPos) == null) {
-                            DimPos invPos = findInventory(world, pos);
-                            selfEntity.fromTag(state, invPos.toTag(selfTag));
+                            findInventory(world, selfEntity, pos, state, selfTag);
                         }
                     }
                     return;
@@ -100,6 +100,15 @@ public class CableLinkBlock extends CableBlock
                 }
             }
         }
+    }
+
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
+        CableBaseBlockEntity cableEntity = (CableBaseBlockEntity) world.getBlockEntity(pos);
+        boolean canConnect = canConnect(world, posFrom);
+        BlockPos neighborInvPos = getInventoryPos((World)world, posFrom);
+        if (cableEntity != null)
+            canConnect = canConnect || (cableEntity.hasInventory() && cableEntity.storagePos.getBlockPos().equals(neighborInvPos));
+        return state.with(FACING_PROPERTIES.get(direction), canConnect);
     }
 
     @SuppressWarnings("deprecation")

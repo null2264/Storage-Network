@@ -35,6 +35,7 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
     public BlockEntity getCables(DimPos dimPos) {
         return null;
     }
+
     @Override
     public void tick() {
         if (world == null) {
