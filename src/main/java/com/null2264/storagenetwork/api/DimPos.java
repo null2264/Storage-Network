@@ -1,7 +1,11 @@
 package com.null2264.storagenetwork.api;
 
+import com.null2264.storagenetwork.ZiroStorageNetwork;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +57,31 @@ public class DimPos
         int z = tag.getInt("Z");
         this.pos = new BlockPos(x, y, z);
         this.dimension = tag.getString("dimension");
+    }
+
+    public DimPos offset(Direction direction) {
+        BlockPos pos = getBlockPos();
+        if (pos == null || direction == null) {
+            ZiroStorageNetwork.LOGGER.info("Error: null offset in DimPos " + direction);
+            return null;
+        }
+        return new DimPos(getWorld(), pos.offset(direction));
+    }
+
+    public BlockEntity getBlockEntity() {
+        BlockPos pos = getBlockPos();
+        World world = getWorld();
+        if (pos != null && world != null)
+            return world.getBlockEntity(pos);
+        return null;
+    }
+
+    public BlockState getBlockState() {
+        BlockPos pos = getBlockPos();
+        World world = getWorld();
+        if (pos != null && world != null)
+            return world.getBlockState(pos);
+        return null;
     }
 
     @Override

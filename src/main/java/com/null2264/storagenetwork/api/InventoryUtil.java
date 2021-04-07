@@ -64,7 +64,9 @@ public class InventoryUtil
     public static ArrayList<ItemStack> getItems(Inventory inv, Direction direction) {
         // Get array of items from inv and return the array list
         ArrayList<ItemStack> items = new ArrayList<>();
-        getAvailableSlots(inv, direction).forEach( i -> {
+        IntStream slots = getAvailableSlots(inv, direction);
+        System.out.println(slots);
+        slots.forEach( i -> {
             ItemStack item = inv.getStack(i);
             if (!item.isEmpty()) {
                 items.add(item);
