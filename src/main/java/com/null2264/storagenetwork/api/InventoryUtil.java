@@ -1,12 +1,15 @@
 package com.null2264.storagenetwork.api;
 
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class InventoryUtil
 {
@@ -43,16 +46,23 @@ public class InventoryUtil
         return null;
     }
 
-    public static ArrayList<ItemStack> getItems(Inventory inv) {
+    public static IntStream getAvailableSlots(Inventory inventory, Direction side) {
+        return (inventory instanceof SidedInventory && side != null) ? IntStream.of(((SidedInventory)inventory).getAvailableSlots(side)) : IntStream.range(0, inventory.size());
+    }
+
+    public static ArrayList<ItemStack> getItems(Inventory inv, Direction direction) {
         // Get array of items from inv and return the array list
         ArrayList<ItemStack> items = new ArrayList<>();
-        if (inv != null) {
-            for (int i = 0; i < inv.size(); i++) {
-                ItemStack item = inv.getStack(i);
-                if (!item.isEmpty())
-                    items.add(item);
+        getAvailableSlots(inv, direction).forEach( i -> {
+            ItemStack item = inv.getStack(i);
+            if (!item.isEmpty()) {
+                items.add(item);
             }
-        }
+        });
         return items;
+    }
+
+    public static ArrayList<ItemStack> getItems(Inventory inv) {
+        return getItems(inv, null);
     }
 }
