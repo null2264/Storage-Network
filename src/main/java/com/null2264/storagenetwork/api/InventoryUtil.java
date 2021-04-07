@@ -1,5 +1,11 @@
 package com.null2264.storagenetwork.api;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.InventoryProvider;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
@@ -15,9 +21,7 @@ public class InventoryUtil
 {
     public static BlockPos getInventoryPos(CompoundTag tag) {
         // Get inventory position if any from tag
-        DimPos dimPos = new DimPos(tag);
-
-        return dimPos.getBlockPos();
+        return new DimPos(tag).getBlockPos();
     }
 
     public static BlockPos getInventoryPos(World world, BlockPos pos) {
@@ -30,20 +34,27 @@ public class InventoryUtil
 
     public static Inventory getInventory(World world, CompoundTag tag) {
         // Get inventory from tag
-        BlockPos pos = getInventoryPos(tag);
-        return getInventory(world, pos);
+        return getInventory(world, getInventoryPos(tag));
     }
 
     public static Inventory getInventory(World world, BlockPos pos) {
         // Get inventory from a position
+        Inventory inventory = null;
         if (!world.isClient) {
-            try {
-                return (Inventory) world.getBlockEntity(pos);
-            } catch (ClassCastException e) {
-                // e.printStackTrace();
+            BlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
+            if (block instanceof InventoryProvider) {
+                inventory = ((InventoryProvider)block).getInventory(state, world, pos);
+            } else if (block.hasBlockEntity()) {
+                BlockEntity entity = world.getBlockEntity(pos);
+                if (entity instanceof Inventory) {
+                    inventory = (Inventory)entity;
+                    if (inventory instanceof ChestBlockEntity && block instanceof ChestBlock)
+                        inventory = ChestBlock.getInventory((ChestBlock)block, state, world, pos, true);
+                }
             }
         }
-        return null;
+        return inventory;
     }
 
     public static IntStream getAvailableSlots(Inventory inventory, Direction side) {
