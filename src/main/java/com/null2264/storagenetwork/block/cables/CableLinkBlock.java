@@ -103,6 +103,7 @@ public class CableLinkBlock extends CableBlock
     }
 
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
+        // TODO: Fix issue when chest turns into double chest or vice versa, cable connection disappear
         CableBaseBlockEntity cableEntity = (CableBaseBlockEntity) world.getBlockEntity(pos);
         boolean canConnect = canConnect(world, posFrom);
         BlockPos neighborInvPos = getInventoryPos((World)world, posFrom);
