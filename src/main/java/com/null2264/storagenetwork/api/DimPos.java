@@ -1,5 +1,6 @@
 package com.null2264.storagenetwork.api;
 
+import com.google.common.base.Objects;
 import com.null2264.storagenetwork.ZiroStorageNetwork;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -31,7 +32,7 @@ public class DimPos
 
     public String dimToString(World world) {
         // Turn dimension into string value
-        return world.getDimension().toString();
+        return world.getRegistryKey().getValue().toString();
     }
 
     @Nullable
@@ -82,6 +83,28 @@ public class DimPos
         if (pos != null && world != null)
             return world.getBlockState(pos);
         return null;
+    }
+
+    public boolean equals(BlockPos pos) {
+        return pos.equals(this.pos);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DimPos dimPos = (DimPos) o;
+        return dimension.equals(dimPos.dimension) &&
+            Objects.equal(pos, dimPos.pos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dimension, pos);
     }
 
     @Override

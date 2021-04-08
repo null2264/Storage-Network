@@ -3,7 +3,6 @@ package com.null2264.storagenetwork.blockentity;
 import com.null2264.storagenetwork.Tags;
 import com.null2264.storagenetwork.ZiroStorageNetwork;
 import com.null2264.storagenetwork.api.DimPos;
-import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -48,25 +47,24 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
     private void addCables(DimPos dimPos, Set<DimPos> set) {
         if (dimPos == null || dimPos.getWorld() == null)
             return;
-        BlockEntity selfEntity = dimPos.getBlockEntity();
         for (Direction dir : Direction.values()) {
             DimPos lookup = dimPos.offset(dir);
-            BlockEntity neighborEntity = lookup.getBlockEntity();
-            if (neighborEntity == null)
-                continue;
-            if (neighborEntity instanceof MasterBlockEntity || neighborEntity.equals(selfEntity)) {
+            // Check if neighbor is a master block.
+            BlockEntity maybeMaster = lookup.getBlockEntity();
+            if (maybeMaster instanceof MasterBlockEntity && !lookup.equals(pos)) {
                 nukeAndDrop(lookup);
                 continue;
             }
+            // Getting cables
+            BlockEntity neighborEntity = lookup.getBlockEntity();
+            if (neighborEntity == null)
+                continue;
             boolean alreadyChecked = set.contains(lookup);
             if (alreadyChecked)
                 continue;
-            DimPos realPos;
             if (lookup.getBlockState().isIn(Tags.CABLES)) {
-                realPos = lookup;
-                set.add(realPos);
-                // TODO: Stop it from looping back and forth
-                // addCables(realPos, set);
+                set.add(lookup);
+                addCables(lookup, set);
                 neighborEntity.markDirty();
             }
         }
@@ -75,7 +73,7 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
     private static void nukeAndDrop(DimPos lookup) {
         World lookupWorld = lookup.getWorld();
         if (lookupWorld != null) {
-            lookupWorld.removeBlock(lookup.getBlockPos(), true);
+            lookupWorld.breakBlock(lookup.getBlockPos(), true);
             lookupWorld.removeBlockEntity(lookup.getBlockPos());
         }
     }
