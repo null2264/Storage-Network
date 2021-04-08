@@ -8,24 +8,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.null2264.storagenetwork.api.InventoryUtil.*;
-import static com.null2264.storagenetwork.api.ItemUtil.merge;
+import static com.null2264.storagenetwork.api.InventoryUtil.getInventoryPos;
 
 public class CableLinkBlock extends CableBlock
 {
@@ -110,34 +103,5 @@ public class CableLinkBlock extends CableBlock
         if (cableEntity != null)
             canConnect = canConnect || (cableEntity.hasInventory() && cableEntity.storagePos.getBlockPos().equals(neighborInvPos));
         return state.with(FACING_PROPERTIES.get(direction), canConnect);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!world.isClient) {
-            BlockEntity selfEntity = world.getBlockEntity(pos);
-            CompoundTag selfTag = new CompoundTag();
-            if (selfEntity != null) {
-                selfTag = selfEntity.toTag(selfTag);
-
-                // Merge item together
-                ArrayList<ItemStack> items = new ArrayList<>();
-                for (ItemStack item : getItems(getInventory(world, selfTag)))
-                    merge(item.copy(), items);
-
-                // Send merged items as message
-                if (!items.isEmpty()) {
-                    player.sendMessage(Text.of("---"), false);
-                    for (ItemStack item : items) {
-                        player.sendMessage(
-                            Text.of(String.format("- %s (%s)", item.getName().getString(), item.getCount())),
-                            false
-                        );
-                    }
-                }
-            }
-        }
-        return ActionResult.SUCCESS;
     }
 }
