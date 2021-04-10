@@ -20,8 +20,7 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
         super(BlockEntityRegistry.MASTER_BLOCK_ENTITY);
     }
 
-    // TODO: tick function that update "cables" every 200 ticks
-    Set<DimPos> cables;
+    Set<DimPos> connectables;
     boolean shouldRefresh = true;
 
     private DimPos getDimPos() {
@@ -87,7 +86,7 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
         if (world.getTime() % 200 == 0 || shouldRefresh) {
             try {
                 if (!world.isClient())
-                    cables = getCables(getDimPos());
+                    connectables = getCables(getDimPos());
             } catch (Throwable e) {
 //                e.printStackTrace();
                 ZiroStorageNetwork.log(e.toString());
@@ -97,9 +96,9 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
     }
 
     public Set<DimPos> getCablePositions() {
-        if (cables == null) {
-            cables = new HashSet<>();
+        if (connectables == null) {
+            connectables = new HashSet<>();
         }
-        return new HashSet<>(cables);
+        return new HashSet<>(connectables);
     }
 }
