@@ -54,7 +54,35 @@ public class CableBlock extends ModBlockWithEntity
 
     @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return VoxelShapes.cuboid(0.34f, 0.34f, 0.34f, 0.66f, 0.66f, 0.66f);
+        VoxelShape centerShape = VoxelShapes.cuboid(0.34f, 0.34f, 0.34f, 0.66f, 0.66f, 0.66f);
+        VoxelShape northShape = VoxelShapes.cuboid(0.43f, 0.43f, 0.0f, 0.57f, 0.57f, 0.57f);
+        VoxelShape southShape = VoxelShapes.cuboid(0.43f, 0.43f, 0.57f, 0.57f, 0.57f, 1.0f);
+        VoxelShape westShape = VoxelShapes.cuboid(0.0f, 0.43f, 0.43f, 0.57f, 0.57f, 0.57f);
+        VoxelShape eastShape = VoxelShapes.cuboid(0.57f, 0.43f, 0.43f, 1.0f, 0.57f, 0.57f);
+        VoxelShape upShape = VoxelShapes.cuboid(0.43f, 0.57f, 0.43f, 0.57f, 1.0f, 0.57f);
+        VoxelShape downShape = VoxelShapes.cuboid(0.43f, 0.0f, 0.43f, 0.57f, 0.57f, 0.57f);
+
+        VoxelShape shape = centerShape;
+        for ( Direction direction : Direction.values() ) {
+            BooleanProperty booleanProperty = FACING_PROPERTIES.get(direction);
+            if (!state.get(booleanProperty))
+                continue;
+
+            if (NORTH.equals(booleanProperty)) {
+                shape = VoxelShapes.union(shape, northShape);
+            } else if (SOUTH.equals(booleanProperty)) {
+                shape = VoxelShapes.union(shape, southShape);
+            } else if (WEST.equals(booleanProperty)) {
+                shape = VoxelShapes.union(shape, westShape);
+            } else if (EAST.equals(booleanProperty)) {
+                shape = VoxelShapes.union(shape, eastShape);
+            } else if (UP.equals(booleanProperty)) {
+                shape = VoxelShapes.union(shape, upShape);
+            } else if (DOWN.equals(booleanProperty)) {
+                shape = VoxelShapes.union(shape, downShape);
+            }
+        }
+        return shape;
     }
 
     public boolean canConnect(WorldAccess world, BlockPos pos) {
