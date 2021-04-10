@@ -1,5 +1,6 @@
 {
     "block.zirostoragenetwork.master": "Storage Master",
     "block.zirostoragenetwork.cable": "Storage Cable",
-    "block.zirostoragenetwork.cable_link": "Storage Link Cable"
+    "block.zirostoragenetwork.cable_link": "Storage Link Cable",
+    "block.zirostoragenetwork.request": "Storage Request Block"
 }

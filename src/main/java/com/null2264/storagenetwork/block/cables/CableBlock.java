@@ -59,7 +59,7 @@ public class CableBlock extends ModBlockWithEntity
 
     public boolean canConnect(WorldAccess world, BlockPos pos) {
         Block block = world.getBlockState(pos).getBlock();
-        return block.isIn(Tags.CABLES) || block.is(BlockRegistry.MASTER_BLOCK);
+        return block.isIn(Tags.CABLES) || block.is(BlockRegistry.MASTER_BLOCK) || block.is(BlockRegistry.REQUEST_BLOCK);
     }
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {

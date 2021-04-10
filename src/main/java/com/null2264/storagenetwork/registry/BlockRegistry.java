@@ -1,5 +1,6 @@
 package com.null2264.storagenetwork.registry;
 
+import com.null2264.storagenetwork.block.RequestBlock;
 import com.null2264.storagenetwork.block.cables.CableBlock;
 import com.null2264.storagenetwork.block.MasterBlock;
 import com.null2264.storagenetwork.block.TestBlock;
@@ -20,6 +21,7 @@ public class BlockRegistry {
     public static final Block MASTER_BLOCK = new MasterBlock();
     public static final Block CABLE_BLOCK = new CableBlock();
     public static final Block CABLE_LINK_BLOCK = new CableLinkBlock();
+    public static final Block REQUEST_BLOCK = new RequestBlock();
 
     public static void register(){
         // Register block
@@ -27,11 +29,13 @@ public class BlockRegistry {
         Registry.register(Registry.BLOCK, new Identifier(MODID, "master"), MASTER_BLOCK);
         Registry.register(Registry.BLOCK, new Identifier(MODID, "cable"), CABLE_BLOCK);
         Registry.register(Registry.BLOCK, new Identifier(MODID, "cable_link"), CABLE_LINK_BLOCK);
+        Registry.register(Registry.BLOCK, new Identifier(MODID, "request"), REQUEST_BLOCK);
 
         // Register block's item
         Registry.register(Registry.ITEM, new Identifier(MODID, "test_block"), new BlockItem(TEST_BLOCK, new FabricItemSettings().group(ItemGroup.MISC)));
         Registry.register(Registry.ITEM, new Identifier(MODID, "master"), new BlockItem(MASTER_BLOCK, new FabricItemSettings().group(ItemGroup.MISC)));
         Registry.register(Registry.ITEM, new Identifier(MODID, "cable"), new BlockItem(CABLE_BLOCK, new FabricItemSettings().group(ItemGroup.MISC)));
         Registry.register(Registry.ITEM, new Identifier(MODID, "cable_link"), new BlockItem(CABLE_LINK_BLOCK, new FabricItemSettings().group(ItemGroup.MISC)));
+        Registry.register(Registry.ITEM, new Identifier(MODID, "request"), new BlockItem(REQUEST_BLOCK, new FabricItemSettings().group(ItemGroup.MISC)));
     }
 }
