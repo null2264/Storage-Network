@@ -3,7 +3,9 @@ package com.null2264.storagenetwork.blockentity;
 import com.null2264.storagenetwork.Tags;
 import com.null2264.storagenetwork.ZiroStorageNetwork;
 import com.null2264.storagenetwork.api.DimPos;
+import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
+import com.null2264.storagenetwork.registry.BlockRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -61,7 +63,15 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
             boolean alreadyChecked = set.contains(lookup);
             if (alreadyChecked)
                 continue;
-            if (lookup.getBlockState().isIn(Tags.CABLES)) {
+            BlockState neighborState = lookup.getBlockState();
+            if (neighborState.isIn(Tags.CABLES) || neighborState.isOf(BlockRegistry.REQUEST_BLOCK)) {
+                if (neighborEntity instanceof RequestBlockEntity) {
+                    RequestBlockEntity neighborEntity2 = (RequestBlockEntity) neighborEntity;
+                    neighborEntity2.setMasterPos(getDimPos());
+                } else if (neighborEntity instanceof CableBaseBlockEntity) {
+                    CableBaseBlockEntity neighborEntity2 = (CableBaseBlockEntity) neighborEntity;
+                    neighborEntity2.setMasterPos(getDimPos());
+                }
                 set.add(lookup);
                 addCables(lookup, set);
                 neighborEntity.markDirty();

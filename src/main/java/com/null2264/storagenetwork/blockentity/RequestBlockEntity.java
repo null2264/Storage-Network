@@ -16,6 +16,10 @@ public class RequestBlockEntity extends BlockEntity
     // masterPos will be set by Master Block's "block updates"
     public DimPos masterPos = null;
 
+    public void setMasterPos(DimPos dimPos) {
+        masterPos = dimPos;
+    }
+
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);

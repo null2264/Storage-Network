@@ -49,8 +49,11 @@ public class MasterBlock extends ModBlockWithEntity
                 // Merge item together
                 ArrayList<ItemStack> items = new ArrayList<>();
                 for (DimPos dimPos : selfEntity.getCablePositions()) {
-                    CableBaseBlockEntity cable = (CableBaseBlockEntity) dimPos.getBlockEntity();
-                    if (!cable.hasInventory())
+                    CableBaseBlockEntity cable = null;
+                    if (dimPos.getBlockEntity() instanceof CableBaseBlockEntity)
+                        cable = (CableBaseBlockEntity) dimPos.getBlockEntity();
+
+                    if (cable == null || !cable.hasInventory())
                         continue;
                     for (ItemStack item : getItems(getInventory(world, cable.storagePos.getBlockPos())))
                         merge(item.copy(), items);

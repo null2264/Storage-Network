@@ -17,6 +17,7 @@ public class CableBaseBlockEntity extends BlockEntity
     }
 
     public DimPos storagePos = null;
+    public DimPos masterPos = null;
 
     public boolean isValidInventory(BlockPos blockPos) {
         return !Objects.equals(blockPos, MiscUtil.invalidPos);
@@ -28,6 +29,10 @@ public class CableBaseBlockEntity extends BlockEntity
             return false;
         BlockPos pos = storagePos.getBlockPos();
         return isValidInventory(pos);
+    }
+
+    public void setMasterPos(DimPos dimPos) {
+        masterPos = dimPos;
     }
 
     @Override
