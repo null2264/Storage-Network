@@ -2,5 +2,6 @@
     "block.zirostoragenetwork.master": "Storage Master",
     "block.zirostoragenetwork.cable": "Storage Cable",
     "block.zirostoragenetwork.cable_link": "Storage Link Cable",
-    "block.zirostoragenetwork.request": "Storage Request Block"
+    "block.zirostoragenetwork.request": "Storage Request Block",
+    "itemGroup.zirostoragenetwork.itemgroup": "ZiRO's Storage Network"
 }
