@@ -1,6 +1,7 @@
 package com.null2264.storagenetwork.block.cables;
 
 import com.null2264.storagenetwork.api.DimPos;
+import com.null2264.storagenetwork.api.MiscUtil;
 import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableLinkBlockEntity;
 import net.minecraft.block.Block;
@@ -34,7 +35,7 @@ public class CableLinkBlock extends CableBlock
         // Find neighbors' inventory
         // "invalid" DimPos (Coordinate "x:0, y:0, z:0")
         // TODO: Find "invalid" position for 1.17, since its height & depth limit is changed in 1.17
-        DimPos invPos = new DimPos(world, new BlockPos(0,0,0));
+        DimPos invPos = new DimPos(world, MiscUtil.invalidPos);
         if (!world.isClient) {
             for (Direction dir : Direction.values()) {
                 if (getInventoryPos(world, pos.offset(dir)) != null) {

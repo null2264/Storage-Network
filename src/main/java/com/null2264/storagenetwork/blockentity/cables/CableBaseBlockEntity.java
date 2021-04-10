@@ -1,6 +1,7 @@
 package com.null2264.storagenetwork.blockentity.cables;
 
 import com.null2264.storagenetwork.api.DimPos;
+import com.null2264.storagenetwork.api.MiscUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -18,8 +19,7 @@ public class CableBaseBlockEntity extends BlockEntity
     public DimPos storagePos = null;
 
     public boolean isValidInventory(BlockPos blockPos) {
-        BlockPos invalidPos = new BlockPos(0, 0, 0);
-        return !Objects.equals(blockPos, invalidPos);
+        return !Objects.equals(blockPos, MiscUtil.invalidPos);
     }
 
     public boolean hasInventory() {
