@@ -3,11 +3,14 @@ package com.null2264.storagenetwork.blockentity;
 import com.null2264.storagenetwork.Tags;
 import com.null2264.storagenetwork.ZiroStorageNetwork;
 import com.null2264.storagenetwork.api.DimPos;
+import com.null2264.storagenetwork.api.InventoryUtil;
 import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import com.null2264.storagenetwork.registry.BlockRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
@@ -110,5 +113,20 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
             connectables = new HashSet<>();
         }
         return new HashSet<>(connectables);
+    }
+
+    public Set<Inventory> getInventories() {
+        HashSet<Inventory> inventories = new HashSet<>();
+        if (world != null) {
+            for (DimPos dimPos : getCablePositions()) {
+                CableBaseBlockEntity cable = null;
+                if (dimPos.getBlockEntity() instanceof CableBaseBlockEntity)
+                    cable = (CableBaseBlockEntity) dimPos.getBlockEntity();
+                if (cable == null || !cable.hasInventory())
+                    continue;
+                inventories.add(InventoryUtil.getInventory(world, cable.storagePos.getBlockPos()));
+            }
+        }
+        return inventories;
     }
 }
