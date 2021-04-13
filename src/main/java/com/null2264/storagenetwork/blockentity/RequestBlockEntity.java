@@ -2,7 +2,7 @@ package com.null2264.storagenetwork.blockentity;
 
 import com.null2264.storagenetwork.api.DimPos;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
-import com.null2264.storagenetwork.screen.RequestScreenHandler;
+import com.null2264.storagenetwork.screen.request.RequestScreenHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
