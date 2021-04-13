@@ -5,15 +5,15 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.CraftingScreenHandler;
 
-import java.util.Set;
+import java.util.List;
 
 public class RequestScreenHandler extends CraftingScreenHandler
 {
-    Set<Inventory> inventories;
+    List<Inventory> inventories;
 
-    public RequestScreenHandler(int syncId, PlayerInventory playerInventory, Set<Inventory> inventorySet) {
+    public RequestScreenHandler(int syncId, PlayerInventory playerInventory, List<Inventory> inventories) {
         super(syncId, playerInventory);
-        inventories = inventorySet;
+        this.inventories = inventories;
     }
 
     @Override

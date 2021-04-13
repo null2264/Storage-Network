@@ -11,12 +11,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MasterBlockEntity extends BlockEntity implements Tickable
@@ -115,8 +118,8 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
         return new HashSet<>(connectables);
     }
 
-    public Set<Inventory> getInventories() {
-        HashSet<Inventory> inventories = new HashSet<>();
+    public List<Inventory> getInventories() {
+        ArrayList<Inventory> inventories = new ArrayList<>();
         if (world != null) {
             for (DimPos dimPos : getCablePositions()) {
                 CableBaseBlockEntity cable = null;
@@ -128,5 +131,15 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
             }
         }
         return inventories;
+    }
+
+    public List<ItemStack> getItems() {
+        ArrayList<ItemStack> result = new ArrayList<>();
+        for ( Inventory inv : getInventories() ) {
+            List<ItemStack> itemList = InventoryUtil.getItems(inv);
+            if (!itemList.isEmpty())
+                result.addAll(itemList);
+        }
+        return result;
     }
 }
