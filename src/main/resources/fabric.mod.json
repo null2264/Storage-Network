@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "com.null2264.storagenetwork.ZiroStorageNetwork"
+    ],
+    "client": [
+      "com.null2264.storagenetwork.ZiroStorageNetworkClient"
     ]
   },
 
