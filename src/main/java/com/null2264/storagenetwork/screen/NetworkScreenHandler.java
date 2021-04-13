@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class NetworkContainer extends ScreenHandler
+public abstract class NetworkScreenHandler extends ScreenHandler
 {
     public abstract MasterBlockEntity getMasterEntity();
 
@@ -31,7 +31,7 @@ public abstract class NetworkContainer extends ScreenHandler
     protected World world;
     public NetworkCraftingInventory craftingInv;
 
-    protected NetworkContainer(@Nullable ScreenHandlerType<?> type, int syncId) {
+    protected NetworkScreenHandler(@Nullable ScreenHandlerType<?> type, int syncId) {
         super(type, syncId);
         this.resultInv = new CraftingResultInventory();
     }
