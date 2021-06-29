@@ -3,7 +3,7 @@ package com.null2264.storagenetwork.blockentity.cables;
 import com.null2264.storagenetwork.api.DimPos;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class CableLinkBlockEntity extends CableBaseBlockEntity
 {
@@ -12,15 +12,15 @@ public class CableLinkBlockEntity extends CableBaseBlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(BlockState state, NbtCompound tag) {
+        super.readNbt(state, tag);
         storagePos = new DimPos(tag);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         if (hasInventory())
             storagePos.toTag(tag);
-        return super.toTag(tag);
+        return super.writeNbt(tag);
     }
 }

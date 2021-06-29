@@ -12,7 +12,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -36,13 +36,13 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(BlockState state, NbtCompound tag) {
+        super.readNbt(state, tag);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        return super.toTag(tag);
+    public NbtCompound writeNbt(NbtCompound tag) {
+        return super.writeNbt(tag);
     }
 
     private Set<DimPos> getCables(DimPos dimPos) {

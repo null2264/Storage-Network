@@ -3,7 +3,7 @@ package com.null2264.storagenetwork.screen;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeFinder;
+import net.minecraft.recipe.RecipeMatcher;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.collection.DefaultedList;
 
@@ -85,9 +85,9 @@ public class NetworkCraftingInventory extends CraftingInventory
     }
 
     @Override
-    public void provideRecipeInputs(RecipeFinder finder) {
+    public void provideRecipeInputs(RecipeMatcher finder) {
         for (ItemStack itemStack : this.itemList) {
-            finder.addNormalItem(itemStack);
+            finder.addUnenchantedInput(itemStack);
         }
     }
 }

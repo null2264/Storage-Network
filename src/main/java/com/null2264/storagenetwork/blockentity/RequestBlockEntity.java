@@ -7,7 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
@@ -39,12 +39,12 @@ public class RequestBlockEntity extends BlockEntity implements NamedScreenHandle
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(BlockState state, NbtCompound tag) {
+        super.readNbt(state, tag);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        return super.toTag(tag);
+    public NbtCompound writeNbt(NbtCompound tag) {
+        return super.writeNbt(tag);
     }
 }

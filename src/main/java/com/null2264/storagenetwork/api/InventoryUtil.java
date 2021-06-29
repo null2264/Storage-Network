@@ -9,7 +9,7 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 
 public class InventoryUtil
 {
-    public static BlockPos getInventoryPos(CompoundTag tag) {
+    public static BlockPos getInventoryPos(NbtCompound tag) {
         // Get inventory position if any from tag
         return new DimPos(tag).getBlockPos();
     }
@@ -32,7 +32,7 @@ public class InventoryUtil
         return null;
     }
 
-    public static Inventory getInventory(World world, CompoundTag tag) {
+    public static Inventory getInventory(World world, NbtCompound tag) {
         // Get inventory from tag
         return getInventory(world, getInventoryPos(tag));
     }

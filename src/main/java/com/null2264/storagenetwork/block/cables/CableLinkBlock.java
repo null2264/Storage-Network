@@ -10,7 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
@@ -31,7 +31,7 @@ public class CableLinkBlock extends CableBlock
         return new CableLinkBlockEntity();
     }
 
-    public void findInventory(World world, BlockEntity cableEntity, BlockPos pos, BlockState cableState, CompoundTag cableTag) {
+    public void findInventory(World world, BlockEntity cableEntity, BlockPos pos, BlockState cableState, NbtCompound cableTag) {
         // Find neighbors' inventory
         // "invalid" DimPos (Coordinate "x:0, y:0, z:0")
         // TODO: Find "invalid" position for 1.17, since its height & depth limit is changed in 1.17
@@ -50,7 +50,7 @@ public class CableLinkBlock extends CableBlock
             }
         }
         world.setBlockState(pos, cableState);
-        cableEntity.fromTag(cableState, invPos.toTag(cableTag));
+        cableEntity.readNbt(cableState, invPos.toTag(cableTag));
     }
 
     @Override
@@ -58,9 +58,9 @@ public class CableLinkBlock extends CableBlock
         if (!world.isClient) {
             // Get neighbor block's inventory upon placing
             BlockEntity selfEntity = world.getBlockEntity(pos);
-            CompoundTag selfTag = new CompoundTag();
+            NbtCompound selfTag = new NbtCompound();
             if (selfEntity != null) {
-                selfTag = selfEntity.toTag(selfTag);
+                selfTag = selfEntity.writeNbt(selfTag);
                 findInventory(world, selfEntity, pos, state, selfTag);
             }
         }
@@ -72,9 +72,9 @@ public class CableLinkBlock extends CableBlock
         /* Get neighbor's inventory if exist when it placed */
         if (!world.isClient) {
             CableBaseBlockEntity selfEntity = (CableBaseBlockEntity) world.getBlockEntity(pos);
-            CompoundTag selfTag = new CompoundTag();
+            NbtCompound selfTag = new NbtCompound();
             if (selfEntity != null) {
-                selfTag = selfEntity.toTag(selfTag);
+                selfTag = selfEntity.writeNbt(selfTag);
                 // Check if cable already have inventory attached
                 if (selfEntity.hasInventory()) {
                     // Check block "properties" if the block position is the same as cable's inventory position
@@ -90,7 +90,7 @@ public class CableLinkBlock extends CableBlock
                 DimPos invPos;
                 if (getInventoryPos(world, fromPos) != null) {
                     invPos = new DimPos(world, fromPos);
-                    selfEntity.fromTag(state, invPos.toTag(selfTag));
+                    selfEntity.readNbt(state, invPos.toTag(selfTag));
                 }
             }
         }

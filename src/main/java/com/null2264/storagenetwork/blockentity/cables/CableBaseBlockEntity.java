@@ -5,7 +5,7 @@ import com.null2264.storagenetwork.api.MiscUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Objects;
@@ -36,12 +36,12 @@ public class CableBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(BlockState state, NbtCompound tag) {
+        super.readNbt(state, tag);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        return super.toTag(tag);
+    public NbtCompound writeNbt(NbtCompound tag) {
+        return super.writeNbt(tag);
     }
 }

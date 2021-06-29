@@ -4,7 +4,7 @@ import com.google.common.base.Objects;
 import com.null2264.storagenetwork.ZiroStorageNetwork;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -17,7 +17,7 @@ public class DimPos
     private BlockPos pos = new BlockPos(0, 0, 0);
     private World world;
 
-    public DimPos(CompoundTag tag) {
+    public DimPos(NbtCompound tag) {
         // Fetch DimPos from nbt tag
         fromTag(tag);
     }
@@ -44,7 +44,7 @@ public class DimPos
         return pos;
     }
 
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         tag.putInt("X", getBlockPos().getX());
         tag.putInt("Y", getBlockPos().getY());
         tag.putInt("Z", getBlockPos().getZ());
@@ -52,7 +52,7 @@ public class DimPos
         return tag;
     }
 
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         int x = tag.getInt("X");
         int y = tag.getInt("Y");
         int z = tag.getInt("Z");
