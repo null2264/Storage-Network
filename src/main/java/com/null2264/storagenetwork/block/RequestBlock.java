@@ -29,8 +29,8 @@ public class RequestBlock extends ModBlockWithEntity
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new RequestBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new RequestBlockEntity(pos, state);
     }
 
     @Override

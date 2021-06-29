@@ -12,8 +12,8 @@ import java.util.Objects;
 
 public class CableBaseBlockEntity extends BlockEntity
 {
-    public CableBaseBlockEntity(BlockEntityType<?> type) {
-        super(type);
+    public CableBaseBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     public DimPos storagePos = null;
@@ -36,8 +36,8 @@ public class CableBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public void readNbt(BlockState state, NbtCompound tag) {
-        super.readNbt(state, tag);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
     }
 
     @Override

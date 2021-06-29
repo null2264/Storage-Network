@@ -45,7 +45,7 @@ public class InventoryUtil
             Block block = state.getBlock();
             if (block instanceof InventoryProvider) {
                 inventory = ((InventoryProvider)block).getInventory(state, world, pos);
-            } else if (block.hasBlockEntity()) {
+            } else if (state.hasBlockEntity()) {
                 BlockEntity entity = world.getBlockEntity(pos);
                 if (entity instanceof Inventory) {
                     inventory = (Inventory)entity;

@@ -1,8 +1,11 @@
 package com.null2264.storagenetwork.block;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+import org.jetbrains.annotations.Nullable;
 
 public class ModBlockWithEntity extends BlockWithEntity
 {
@@ -10,8 +13,9 @@ public class ModBlockWithEntity extends BlockWithEntity
         super(settings);
     }
 
+    @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return null;
     }
 }

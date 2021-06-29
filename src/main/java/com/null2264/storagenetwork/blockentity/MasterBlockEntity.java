@@ -9,11 +9,10 @@ import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import com.null2264.storagenetwork.registry.BlockRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
@@ -22,22 +21,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MasterBlockEntity extends BlockEntity implements Tickable
+public class MasterBlockEntity extends BlockEntity
 {
-    public MasterBlockEntity() {
-        super(BlockEntityRegistry.MASTER_BLOCK_ENTITY);
+    public MasterBlockEntity(BlockPos pos, BlockState state) {
+        super(BlockEntityRegistry.MASTER_BLOCK_ENTITY, pos, state);
     }
 
-    Set<DimPos> connectables;
-    boolean shouldRefresh = true;
+    private static Set<DimPos> connectables;
+    private static boolean shouldRefresh = true;
 
-    private DimPos getDimPos() {
+    private static DimPos getDimPos(World world, BlockPos pos) {
         return new DimPos(world, pos);
     }
 
     @Override
-    public void readNbt(BlockState state, NbtCompound tag) {
-        super.readNbt(state, tag);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
     }
 
     @Override
@@ -45,17 +44,18 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
         return super.writeNbt(tag);
     }
 
-    private Set<DimPos> getCables(DimPos dimPos) {
+    private static Set<DimPos> getCables(DimPos dimPos) {
         HashSet<DimPos> result = new HashSet<>();
-        addCables(dimPos, result);
+        addCables(dimPos, dimPos.getBlockPos(), result);
         return result;
     }
 
-    private void addCables(DimPos dimPos, Set<DimPos> set) {
+    private static void addCables(DimPos dimPos, BlockPos pos, Set<DimPos> set) {
         if (dimPos == null || dimPos.getWorld() == null)
             return;
         for (Direction dir : Direction.values()) {
             DimPos lookup = dimPos.offset(dir);
+            World world = dimPos.getWorld();
             // Check if neighbor is a master block.
             BlockEntity maybeMaster = lookup.getBlockEntity();
             if (maybeMaster instanceof MasterBlockEntity && !lookup.equals(pos)) {
@@ -71,15 +71,13 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
                 continue;
             BlockState neighborState = lookup.getBlockState();
             if (neighborState.isIn(Tags.CABLES) || neighborState.isOf(BlockRegistry.REQUEST_BLOCK)) {
-                if (neighborEntity instanceof RequestBlockEntity) {
-                    RequestBlockEntity neighborEntity2 = (RequestBlockEntity) neighborEntity;
-                    neighborEntity2.setMasterPos(getDimPos());
-                } else if (neighborEntity instanceof CableBaseBlockEntity) {
-                    CableBaseBlockEntity neighborEntity2 = (CableBaseBlockEntity) neighborEntity;
-                    neighborEntity2.setMasterPos(getDimPos());
+                if (neighborEntity instanceof RequestBlockEntity neighborEntity2) {
+                    neighborEntity2.setMasterPos(getDimPos(world, pos));
+                } else if (neighborEntity instanceof CableBaseBlockEntity neighborEntity2) {
+                    neighborEntity2.setMasterPos(getDimPos(world, pos));
                 }
                 set.add(lookup);
-                addCables(lookup, set);
+                addCables(lookup, pos, set);
                 neighborEntity.markDirty();
             }
         }
@@ -93,8 +91,7 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
         }
     }
 
-    @Override
-    public void tick() {
+    public static void tick(World world, BlockPos pos) {
         if (world == null) {
             return;
         }
@@ -102,7 +99,7 @@ public class MasterBlockEntity extends BlockEntity implements Tickable
         if (world.getTime() % 200 == 0 || shouldRefresh) {
             try {
                 if (!world.isClient())
-                    connectables = getCables(getDimPos());
+                    connectables = getCables(getDimPos(world, pos));
             } catch (Throwable e) {
 //                e.printStackTrace();
                 ZiroStorageNetwork.log(e.toString());

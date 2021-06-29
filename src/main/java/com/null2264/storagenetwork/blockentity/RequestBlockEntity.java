@@ -12,11 +12,12 @@ import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
 
 public class RequestBlockEntity extends BlockEntity implements NamedScreenHandlerFactory
 {
-    public RequestBlockEntity() {
-        super(BlockEntityRegistry.REQUEST_BLOCK_ENTITY);
+    public RequestBlockEntity(BlockPos pos, BlockState state) {
+        super(BlockEntityRegistry.REQUEST_BLOCK_ENTITY, pos, state);
     }
 
     // masterPos will be set by Master Block's "block updates"
@@ -39,8 +40,8 @@ public class RequestBlockEntity extends BlockEntity implements NamedScreenHandle
     }
 
     @Override
-    public void readNbt(BlockState state, NbtCompound tag) {
-        super.readNbt(state, tag);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
     }
 
     @Override

@@ -27,8 +27,8 @@ public class CableLinkBlock extends CableBlock
         super();
     }
 
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new CableLinkBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new CableLinkBlockEntity(pos, state);
     }
 
     public void findInventory(World world, BlockEntity cableEntity, BlockPos pos, BlockState cableState, NbtCompound cableTag) {
@@ -50,7 +50,7 @@ public class CableLinkBlock extends CableBlock
             }
         }
         world.setBlockState(pos, cableState);
-        cableEntity.readNbt(cableState, invPos.toTag(cableTag));
+        cableEntity.readNbt(invPos.toTag(cableTag));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class CableLinkBlock extends CableBlock
                 DimPos invPos;
                 if (getInventoryPos(world, fromPos) != null) {
                     invPos = new DimPos(world, fromPos);
-                    selfEntity.readNbt(state, invPos.toTag(selfTag));
+                    selfEntity.readNbt(invPos.toTag(selfTag));
                 }
             }
         }

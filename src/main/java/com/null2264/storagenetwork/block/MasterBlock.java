@@ -3,11 +3,14 @@ package com.null2264.storagenetwork.block;
 import com.null2264.storagenetwork.api.DimPos;
 import com.null2264.storagenetwork.blockentity.MasterBlockEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
+import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -15,8 +18,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -31,8 +34,14 @@ public class MasterBlock extends ModBlockWithEntity
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new MasterBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new MasterBlockEntity(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return world.isClient ? null : checkType(type, BlockEntityRegistry.MASTER_BLOCK_ENTITY, (world1, pos, state1, entity) -> MasterBlockEntity.tick(world1, pos));
     }
 
     @Override

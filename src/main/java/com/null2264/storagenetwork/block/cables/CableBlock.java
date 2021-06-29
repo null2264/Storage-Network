@@ -2,7 +2,9 @@ package com.null2264.storagenetwork.block.cables;
 
 import com.google.common.collect.Maps;
 import com.null2264.storagenetwork.Tags;
+import com.null2264.storagenetwork.block.MasterBlock;
 import com.null2264.storagenetwork.block.ModBlockWithEntity;
+import com.null2264.storagenetwork.block.RequestBlock;
 import com.null2264.storagenetwork.blockentity.cables.CableBlockEntity;
 import com.null2264.storagenetwork.registry.BlockRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -44,8 +46,8 @@ public class CableBlock extends ModBlockWithEntity
         super(FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
     }
 
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new CableBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new CableBlockEntity(pos, state);
     }
 
     public BlockRenderType getRenderType(BlockState state) {
@@ -86,8 +88,9 @@ public class CableBlock extends ModBlockWithEntity
     }
 
     public boolean canConnect(WorldAccess world, BlockPos pos) {
-        Block block = world.getBlockState(pos).getBlock();
-        return block.isIn(Tags.CABLES) || block.is(BlockRegistry.MASTER_BLOCK) || block.is(BlockRegistry.REQUEST_BLOCK);
+        BlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
+        return blockState.isIn(Tags.CABLES) || block instanceof MasterBlock || block instanceof RequestBlock;
     }
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {

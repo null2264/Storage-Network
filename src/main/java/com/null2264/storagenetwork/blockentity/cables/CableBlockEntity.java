@@ -13,13 +13,13 @@ import java.util.Objects;
 
 public class CableBlockEntity extends CableBaseBlockEntity
 {
-    public CableBlockEntity() {
-        super(BlockEntityRegistry.CABLE_BLOCK_ENTITY);
+    public CableBlockEntity(BlockPos pos, BlockState state) {
+        super(BlockEntityRegistry.CABLE_BLOCK_ENTITY, pos, state);
     }
 
     @Override
-    public void readNbt(BlockState state, NbtCompound tag) {
-        super.readNbt(state, tag);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
     }
 
     @Override
