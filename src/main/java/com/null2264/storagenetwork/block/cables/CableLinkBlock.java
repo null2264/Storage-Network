@@ -29,41 +29,18 @@ public class CableLinkBlock extends CableBlock
         return new CableLinkBlockEntity(pos, state);
     }
 
-    public void findInventory(World world, BlockEntity cableEntity, BlockPos pos, BlockState cableState, NbtCompound cableTag) {
-        DimPos invPos = new DimPos(world, MiscUtil.invalidPos);
-        if (!world.isClient) {
-            for (Direction dir : Direction.values()) {
-                if (getInventoryPos(world, pos.offset(dir)) != null) {
-                    if (cableState != null) {
-                        // Since its inventory, canConnect always return true
-                        cableState = cableState.with(FACING_PROPERTIES.get(dir), true);
-                    }
-                    invPos = new DimPos(world, pos.offset(dir));
-                    // Break the loop, we already got an inventory block
-                    break;
-                }
-            }
-        }
-        world.setBlockState(pos, cableState);
-        cableEntity.readNbt(invPos.toTag(cableTag));
-    }
-
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
+    public BlockState findInventory(World world, BlockEntity cableEntity, BlockPos pos, BlockState cableState, NbtCompound cableTag, Direction direction) {
         // Find neighbors' inventory
+        BlockState newState = null;
+
         // "invalid" DimPos (Coordinate "x:0, y:0, z:0")
         // TODO: Find "invalid" position for 1.18, since its height & depth limit is changed in 1.18
-        World world = ctx.getWorld();
-        BlockPos pos = ctx.getBlockPos();
-        BlockState originalState = super.getPlacementState(ctx);
-        BlockState newState = null;
         DimPos invPos = new DimPos(world, MiscUtil.invalidPos);
         if (!world.isClient) {
             Direction invDir = null;
 
             // Trying to get inv position if player place link cable facing an inv block
-            Direction direction = ctx.getSide().getOpposite();
-            if (getInventoryPos(world, pos.offset(direction)) != null)
+            if (direction != null && getInventoryPos(world, pos.offset(direction)) != null)
                 invDir = direction;
 
             // No inv block found lets try getting it by looping direction around the block
@@ -79,44 +56,37 @@ public class CableLinkBlock extends CableBlock
 
             // Save the position and new state
             if (invDir != null) {
-                if (originalState != null) {
+                if (cableState != null) {
                     // Since its inventory, canConnect always return true
-                    newState = originalState.with(FACING_PROPERTIES.get(invDir), true);
+                    newState = cableState.with(FACING_PROPERTIES.get(invDir), true);
                 }
                 invPos = new DimPos(world, pos.offset(invDir));
             }
         }
 
         // Save invPos to an nbt tag
-        BlockEntity cableEntity = world.getBlockEntity(pos);
-        NbtCompound cableTag = new NbtCompound();
         if (cableEntity != null) {
             cableTag = cableEntity.writeNbt(cableTag);
             cableEntity.readNbt(invPos.toTag(cableTag));
         }
 
         // Return the new state
-        return newState;
+        return newState == null ? cableState : newState;
     }
 
-//    @Override
-//    public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack item) {
-//        if (!world.isClient) {
-//            // Get neighbor block's inventory upon placing
-//            BlockEntity selfEntity = world.getBlockEntity(pos);
-//            NbtCompound selfTag = new NbtCompound();
-//            if (selfEntity != null) {
-//                selfTag = selfEntity.writeNbt(selfTag);
-//                findInventory(world, selfEntity, pos, state, selfTag);
-//            }
-//        }
-//    }
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        World world = ctx.getWorld();
+        BlockPos pos = ctx.getBlockPos();
+        BlockState originalState = super.getPlacementState(ctx);
+
+        return findInventory(world, world.getBlockEntity(pos), pos, originalState, new NbtCompound(), ctx.getSide().getOpposite());
+    }
 
     @SuppressWarnings("deprecation")
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
         /* Get neighbor's inventory if exist when it placed */
-        // TODO: Find a way to get direction of updated neighbor relative to cable's position
         if (!world.isClient) {
             CableBaseBlockEntity selfEntity = (CableBaseBlockEntity) world.getBlockEntity(pos);
             NbtCompound selfTag = new NbtCompound();
@@ -129,7 +99,8 @@ public class CableLinkBlock extends CableBlock
                         // Update cable's DimPos if block no longer an inventory block
                         BlockState fromBlock = world.getBlockState(fromPos);
                         if (fromBlock.isOf(Blocks.AIR) || getInventoryPos(world, fromPos) == null) {
-                            findInventory(world, selfEntity, pos, state, selfTag);
+                            BlockState newState = findInventory(world, selfEntity, pos, state, selfTag, null);
+                            world.setBlockState(pos, newState);
                         }
                     }
                     return;
