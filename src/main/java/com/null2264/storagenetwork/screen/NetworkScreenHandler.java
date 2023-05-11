@@ -46,14 +46,14 @@ public abstract class NetworkScreenHandler extends ScreenHandler
     protected void bindPlayerInv(PlayerInventory playerInventory) {
         for (int m = 0; m < 3; ++m) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + m * 9 + 9, 8 + l * 18, 174 + m * 18));
+                this.addSlot(new Slot(playerInventory, l + m * 9 + 9, 8 + l * 18, 96 + m * 18));
             }
         }
     }
 
     public void bindHotbar(PlayerInventory playerInventory) {
         for (int m = 0; m < 9; ++m) {
-            this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142));
+            this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142 + 3 * 18));
         }
     }
 

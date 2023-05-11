@@ -9,24 +9,29 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.Slot;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class RequestScreenHandler extends NetworkScreenHandler
 {
-    List<Inventory> inventories;
+    MasterBlockEntity masterBlockEntity;
 
-    public RequestScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
-        this(syncId, playerInventory, List.of(new SimpleInventory(9)));
+    public RequestScreenHandler(int syncId, PlayerInventory playerInventory) {
+        this(syncId, playerInventory, null);
 //        this.craftingInv = new NetworkCraftingInventory(this);
 //        this.bindGrid(craftingInv);
+        this.bindPlayerInv(playerInventory);
         this.bindHotbar(playerInventory);
     }
 
-    public RequestScreenHandler(int syncId, PlayerInventory playerInventory, List<Inventory> inventories) {
+    public RequestScreenHandler(int syncId, PlayerInventory playerInventory, @Nullable MasterBlockEntity masterBlockEntity) {
         super(ZiroStorageNetwork.REQUEST_SCREEN_HANDLER, syncId);
         this.player = playerInventory.player;
-        this.inventories = inventories;
+        this.masterBlockEntity = masterBlockEntity;
+        List<Inventory> inventories = List.of(new SimpleInventory(9));
+        if (masterBlockEntity != null)
+            inventories = masterBlockEntity.getInventories();
         this.bindInv(inventories);
     }
 
@@ -34,14 +39,14 @@ public class RequestScreenHandler extends NetworkScreenHandler
         Inventory inventory = inventories.get(0);
 //        this.addSlot(new Slot(inventories.get(0), 0, 8, 174));
         int m;
-        for(m = 0; m < 5; ++m) {
-            this.addSlot(new Slot(inventory, m, 44 + m * 18, 20));
+        for(m = 0; m < 9; ++m) {
+            this.addSlot(new Slot(inventory, m, 8 + m * 18, 20));
         }
     }
 
     @Override
     public MasterBlockEntity getMasterEntity() {
-        return null;
+        return masterBlockEntity;
     }
 
     @Override

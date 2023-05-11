@@ -7,6 +7,7 @@ import com.null2264.storagenetwork.screen.request.RequestScreenHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandlerType;
@@ -27,14 +28,20 @@ public class ZiroStorageNetwork implements ModInitializer
 			() -> new ItemStack(BlockRegistry.REQUEST_BLOCK));
 
 	// Register Screen Handler
-	public static final ScreenHandlerType<RequestScreenHandler> REQUEST_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(RequestScreenHandler::new);
+	public static ScreenHandlerType<RequestScreenHandler> REQUEST_SCREEN_HANDLER;
+
+	static {
+		REQUEST_SCREEN_HANDLER = Registry.register(
+				Registry.SCREEN_HANDLER, identifierOf("request_screen_handler"),
+				new ScreenHandlerType<>(RequestScreenHandler::new)
+		);
+	}
 
 	@Override
 	public void onInitialize() {
 		ConfigHelper.loadOrDefault();
 		BlockRegistry.register();
 		BlockEntityRegistry.register();
-		Registry.register(Registry.SCREEN_HANDLER, identifierOf("request_screen_handler"), REQUEST_SCREEN_HANDLER);
 		log("Hello World");
 	}
 
