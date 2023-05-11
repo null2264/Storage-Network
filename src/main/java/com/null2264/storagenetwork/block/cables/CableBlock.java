@@ -5,12 +5,17 @@ import com.null2264.storagenetwork.Tags;
 import com.null2264.storagenetwork.block.MasterBlock;
 import com.null2264.storagenetwork.block.ModBlockWithEntity;
 import com.null2264.storagenetwork.block.RequestBlock;
+import com.null2264.storagenetwork.blockentity.MasterBlockEntity;
+import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableBlockEntity;
+import com.null2264.storagenetwork.lib.DimPos;
 import com.null2264.storagenetwork.registry.BlockRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.Util;
@@ -19,11 +24,16 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+// TODO: Fix cable connection
 public class CableBlock extends ModBlockWithEntity
 {
     public static final BooleanProperty NORTH = ConnectingBlock.NORTH;
@@ -101,6 +111,33 @@ public class CableBlock extends ModBlockWithEntity
             .with(WEST, canConnect(world, pos.west()))
             .with(UP, canConnect(world, pos.up()))
             .with(DOWN, canConnect(world, pos.down()));
+    }
+
+    @Override
+    public void onPlaced(
+            World world,
+            BlockPos pos,
+            BlockState state,
+            @Nullable LivingEntity placer,
+            ItemStack itemStack
+    ) {
+        CableBaseBlockEntity thisEntity = (CableBaseBlockEntity) world.getBlockEntity(pos);
+        if (thisEntity == null) return;
+
+        DimPos masterPos = thisEntity.masterPos;
+        List<CableBaseBlockEntity> foundCable = new ArrayList<>();
+        for (Direction direction : Direction.values()) {
+            BlockEntity probablyCable = world.getBlockEntity(pos.offset(direction));
+            if (probablyCable instanceof CableBaseBlockEntity)
+                foundCable.add((CableBaseBlockEntity) probablyCable);
+            if (probablyCable instanceof MasterBlockEntity && masterPos == null) {
+                masterPos = new DimPos(world, probablyCable.getPos());
+                thisEntity.setMasterPos(masterPos);
+            }
+        }
+
+        DimPos finalMasterPos = masterPos;
+        foundCable.forEach(c -> {if (c.masterPos == null) c.setMasterPos(finalMasterPos);});
     }
 
     @SuppressWarnings("deprecation")

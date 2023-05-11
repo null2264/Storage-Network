@@ -7,12 +7,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -76,14 +79,21 @@ public class CableLinkBlock extends CableBlock
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        World world = ctx.getWorld();
-        BlockState originalState = super.getPlacementState(ctx);
-        if (world.isClient) return originalState;
-        BlockPos pos = ctx.getBlockPos();
+    public void onPlaced(
+            World world,
+            BlockPos pos,
+            BlockState state,
+            @Nullable LivingEntity placer,
+            ItemStack itemStack
+    ) {
+        if (world.isClient) return;
         BlockEntity cableEntity = world.getBlockEntity(pos);
+        Direction dir = null;
+        if (placer != null)
+            dir = placer.getHorizontalFacing();
 
-        return findInventory(world, cableEntity, pos, originalState, new NbtCompound(), ctx.getSide().getOpposite());
+        BlockState newState = findInventory(world, cableEntity, pos, state, new NbtCompound(), dir);
+        world.setBlockState(pos, newState);
     }
 
     @SuppressWarnings("deprecation")
