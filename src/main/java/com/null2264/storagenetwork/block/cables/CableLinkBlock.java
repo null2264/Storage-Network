@@ -1,7 +1,6 @@
 package com.null2264.storagenetwork.block.cables;
 
-import com.null2264.storagenetwork.api.DimPos;
-import com.null2264.storagenetwork.api.MiscUtil;
+import com.null2264.storagenetwork.lib.DimPos;
 import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableLinkBlockEntity;
 import net.minecraft.block.Block;
@@ -17,7 +16,7 @@ import net.minecraft.world.WorldAccess;
 
 import java.util.Objects;
 
-import static com.null2264.storagenetwork.api.InventoryUtil.getInventoryPos;
+import static com.null2264.storagenetwork.lib.InventoryUtil.getInventoryPos;
 
 public class CableLinkBlock extends CableBlock
 {
@@ -25,6 +24,7 @@ public class CableLinkBlock extends CableBlock
         super();
     }
 
+    @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new CableLinkBlockEntity(pos, state);
     }
@@ -35,7 +35,7 @@ public class CableLinkBlock extends CableBlock
 
         // "invalid" DimPos (Coordinate "x:0, y:0, z:0")
         // TODO: Find "invalid" position for 1.18, since its height & depth limit is changed in 1.18
-        DimPos invPos = new DimPos(world, MiscUtil.invalidPos);
+        DimPos invPos = DimPos.INVALID;
         if (!world.isClient) {
             Direction invDir = null;
 
@@ -66,8 +66,9 @@ public class CableLinkBlock extends CableBlock
 
         // Save invPos to an nbt tag
         if (cableEntity != null) {
-            cableTag = cableEntity.writeNbt(cableTag);
-            cableEntity.readNbt(invPos.toTag(cableTag));
+            ((CableBaseBlockEntity) cableEntity).writeNbt(cableTag);
+            invPos.putToNbt(cableTag);
+            cableEntity.readNbt(cableTag);
         }
 
         // Return the new state
@@ -77,10 +78,12 @@ public class CableLinkBlock extends CableBlock
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         World world = ctx.getWorld();
-        BlockPos pos = ctx.getBlockPos();
         BlockState originalState = super.getPlacementState(ctx);
+        if (world.isClient) return originalState;
+        BlockPos pos = ctx.getBlockPos();
+        BlockEntity cableEntity = world.getBlockEntity(pos);
 
-        return findInventory(world, world.getBlockEntity(pos), pos, originalState, new NbtCompound(), ctx.getSide().getOpposite());
+        return findInventory(world, cableEntity, pos, originalState, new NbtCompound(), ctx.getSide().getOpposite());
     }
 
     @SuppressWarnings("deprecation")
@@ -91,7 +94,7 @@ public class CableLinkBlock extends CableBlock
             CableBaseBlockEntity selfEntity = (CableBaseBlockEntity) world.getBlockEntity(pos);
             NbtCompound selfTag = new NbtCompound();
             if (selfEntity != null) {
-                selfTag = selfEntity.writeNbt(selfTag);
+                selfEntity.writeNbt(selfTag);
                 // Check if cable already have inventory attached
                 if (selfEntity.hasInventory()) {
                     // Check block "properties" if the block position is the same as cable's inventory position
@@ -108,19 +111,24 @@ public class CableLinkBlock extends CableBlock
                 DimPos invPos;
                 if (getInventoryPos(world, fromPos) != null) {
                     invPos = new DimPos(world, fromPos);
-                    selfEntity.readNbt(invPos.toTag(selfTag));
+                    invPos.putToNbt(selfTag);
+                    selfEntity.readNbt(selfTag);
                 }
             }
         }
     }
 
+    @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
-        // TODO: Fix issue when chest turns into double chest or vice versa, cable connection disappear
+        if (world.isClient()) return state;
         CableBaseBlockEntity cableEntity = (CableBaseBlockEntity) world.getBlockEntity(pos);
-        boolean canConnect = canConnect(world, posFrom);
-        BlockPos neighborInvPos = getInventoryPos((World)world, posFrom);
-        if (cableEntity != null)
-            canConnect = canConnect || (cableEntity.hasInventory() && cableEntity.storagePos.getBlockPos().equals(neighborInvPos));
-        return state.with(FACING_PROPERTIES.get(direction), canConnect);
+        if (cableEntity != null) {
+            BlockPos neighbourInvPos = getInventoryPos((World) world, posFrom);
+            if (cableEntity.hasInventory() && cableEntity.storagePos.getBlockPos().equals(neighbourInvPos))
+                // cable has storage inventory attached and the position of the inventory is the same as this inv
+                return state.with(FACING_PROPERTIES.get(direction), true);
+            return state.with(FACING_PROPERTIES.get(direction), canConnect(world, posFrom));
+        }
+        return state;
     }
 }

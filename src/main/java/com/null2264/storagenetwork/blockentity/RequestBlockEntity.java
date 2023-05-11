@@ -1,6 +1,6 @@
 package com.null2264.storagenetwork.blockentity;
 
-import com.null2264.storagenetwork.api.DimPos;
+import com.null2264.storagenetwork.lib.DimPos;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import com.null2264.storagenetwork.screen.request.RequestScreenHandler;
 import net.minecraft.block.BlockState;
@@ -45,7 +45,7 @@ public class RequestBlockEntity extends BlockEntity implements NamedScreenHandle
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        return super.writeNbt(tag);
+    public void writeNbt(NbtCompound tag) {
+        super.writeNbt(tag);
     }
 }

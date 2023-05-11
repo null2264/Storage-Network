@@ -1,7 +1,6 @@
 package com.null2264.storagenetwork.blockentity.cables;
 
-import com.null2264.storagenetwork.api.DimPos;
-import com.null2264.storagenetwork.api.MiscUtil;
+import com.null2264.storagenetwork.lib.DimPos;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -19,16 +18,15 @@ public class CableBaseBlockEntity extends BlockEntity
     public DimPos storagePos = null;
     public DimPos masterPos = null;
 
-    public boolean isValidInventory(BlockPos blockPos) {
-        return !Objects.equals(blockPos, MiscUtil.invalidPos);
+    public boolean isInventoryValid() {
+        return !storagePos.equals(DimPos.INVALID);
     }
 
     public boolean hasInventory() {
         /* Check if link cable already has inventory */
         if (storagePos == null)
             return false;
-        BlockPos pos = storagePos.getBlockPos();
-        return isValidInventory(pos);
+        return isInventoryValid();
     }
 
     public void setMasterPos(DimPos dimPos) {
@@ -41,7 +39,7 @@ public class CableBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        return super.writeNbt(tag);
+    public void writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
     }
 }

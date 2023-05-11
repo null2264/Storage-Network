@@ -1,4 +1,4 @@
-package com.null2264.storagenetwork.api;
+package com.null2264.storagenetwork.lib;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;

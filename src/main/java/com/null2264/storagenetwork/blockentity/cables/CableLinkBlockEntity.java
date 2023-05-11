@@ -1,6 +1,6 @@
 package com.null2264.storagenetwork.blockentity.cables;
 
-import com.null2264.storagenetwork.api.DimPos;
+import com.null2264.storagenetwork.lib.DimPos;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
@@ -19,9 +19,9 @@ public class CableLinkBlockEntity extends CableBaseBlockEntity
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public void writeNbt(NbtCompound nbt) {
         if (hasInventory())
-            storagePos.toTag(tag);
-        return super.writeNbt(tag);
+            storagePos.putToNbt(nbt);
+        super.writeNbt(nbt);
     }
 }

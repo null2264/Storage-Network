@@ -1,5 +1,6 @@
 package com.null2264.storagenetwork.block;
 
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
@@ -11,6 +12,12 @@ public class ModBlockWithEntity extends BlockWithEntity
 {
     protected ModBlockWithEntity(Settings settings) {
         super(settings);
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        // With inheriting from BlockWithEntity this defaults to INVISIBLE, so we need to change that!
+        return BlockRenderType.MODEL;
     }
 
     @Nullable

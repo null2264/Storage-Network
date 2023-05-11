@@ -46,12 +46,9 @@ public class CableBlock extends ModBlockWithEntity
         super(FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
     }
 
+    @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new CableBlockEntity(pos, state);
-    }
-
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
     }
 
     @SuppressWarnings("deprecation")

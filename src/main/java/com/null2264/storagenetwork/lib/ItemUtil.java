@@ -1,4 +1,4 @@
-package com.null2264.storagenetwork.api;
+package com.null2264.storagenetwork.lib;
 
 import net.minecraft.item.ItemStack;
 
@@ -8,9 +8,9 @@ import java.util.Objects;
 public class ItemUtil
 {
     public static boolean canMerge(ItemStack stack1, ItemStack stack2) {
-        if (!stack1.isItemEqual(stack2) || stack1.isEmpty() || stack1.hasTag() != stack2.hasTag())
+        if (!stack1.isItemEqual(stack2) || stack1.isEmpty() || stack1.hasNbt() != stack2.hasNbt())
             return false;
-        return !stack2.hasTag() || Objects.equals(stack2.getTag(), stack1.getTag());
+        return !stack2.hasNbt() || Objects.equals(stack2.getNbt(), stack1.getNbt());
     }
 
     public static void merge(ItemStack from, ArrayList<ItemStack> to) {

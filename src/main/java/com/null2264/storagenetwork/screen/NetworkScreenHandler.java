@@ -13,7 +13,9 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +30,7 @@ public abstract class NetworkScreenHandler extends ScreenHandler
     protected boolean recipeLocked = false;
     protected CraftingRecipe currentRecipe;
     protected PlayerEntity player;
-    protected World world;
+    protected ServerWorld world;
     public NetworkCraftingInventory craftingInv;
 
     protected NetworkScreenHandler(@Nullable ScreenHandlerType<?> type, int syncId) {
@@ -84,19 +86,18 @@ public abstract class NetworkScreenHandler extends ScreenHandler
         updateResult(this.syncId, this.world, this.player, this.craftingInv, this.resultInv);
     }
 
-    protected void updateResultClient(World world, CraftingInventory craftingInventory) {
+    protected void updateResultClient(ServerWorld world, CraftingInventory craftingInventory) {
         Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
-        if (optional.isPresent())
-            this.currentRecipe = (CraftingRecipe)optional.get();
+        optional.ifPresent(craftingRecipe -> this.currentRecipe = craftingRecipe);
     }
 
-    protected void updateResult(int syncId, World world, PlayerEntity player, CraftingInventory craftingInventory, CraftingResultInventory resultInventory) {
+    protected void updateResult(int syncId, ServerWorld world, PlayerEntity player, CraftingInventory craftingInventory, CraftingResultInventory resultInventory) {
         if (!world.isClient) {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
             ItemStack itemStack = ItemStack.EMPTY;
             Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
             if (optional.isPresent()) {
-                CraftingRecipe craftingRecipe = (CraftingRecipe)optional.get();
+                CraftingRecipe craftingRecipe = optional.get();
                 if (resultInventory.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe)) {
                     itemStack = craftingRecipe.craft(craftingInventory);
                     this.currentRecipe = craftingRecipe;
@@ -104,7 +105,7 @@ public abstract class NetworkScreenHandler extends ScreenHandler
             }
 
             resultInventory.setStack(0, itemStack);
-            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(syncId, 0, itemStack));
+            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(syncId, 0, 0, itemStack));
         }
     }
 
@@ -112,8 +113,8 @@ public abstract class NetworkScreenHandler extends ScreenHandler
         ItemStack itemStack = ItemStack.EMPTY;
         if (player.world.isClient)
             return itemStack;
-        Slot slot = (Slot) this.slots.get(index);
-        if (slot != null && slot.hasStack()) {
+        Slot slot = this.slots.get(index);
+        if (slot.hasStack()) {
             ItemStack itemStack1 = slot.getStack();
             itemStack = itemStack1.copy();
             MasterBlockEntity masterBlockEntity = this.getMasterEntity();

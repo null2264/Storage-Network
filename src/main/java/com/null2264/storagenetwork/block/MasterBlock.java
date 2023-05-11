@@ -1,6 +1,6 @@
 package com.null2264.storagenetwork.block;
 
-import com.null2264.storagenetwork.api.DimPos;
+import com.null2264.storagenetwork.lib.DimPos;
 import com.null2264.storagenetwork.blockentity.MasterBlockEntity;
 import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
@@ -23,9 +23,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static com.null2264.storagenetwork.api.InventoryUtil.getInventory;
-import static com.null2264.storagenetwork.api.InventoryUtil.getItems;
-import static com.null2264.storagenetwork.api.ItemUtil.merge;
+import static com.null2264.storagenetwork.lib.InventoryUtil.getInventory;
+import static com.null2264.storagenetwork.lib.InventoryUtil.getItems;
+import static com.null2264.storagenetwork.lib.ItemUtil.merge;
 
 public class MasterBlock extends ModBlockWithEntity
 {
@@ -42,11 +42,6 @@ public class MasterBlock extends ModBlockWithEntity
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
         return world.isClient ? null : checkType(type, BlockEntityRegistry.MASTER_BLOCK_ENTITY, (world1, pos, state1, entity) -> MasterBlockEntity.tick(world1, pos));
-    }
-
-    @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
     }
 
     @SuppressWarnings("deprecation")

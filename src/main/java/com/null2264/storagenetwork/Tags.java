@@ -1,12 +1,11 @@
 package com.null2264.storagenetwork;
 
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.registry.Registry;
 
-import static com.null2264.storagenetwork.ZiroStorageNetwork.MODID;
+import static com.null2264.storagenetwork.lib.IdentifierUtil.identifierOf;
 
 public class Tags {
-    public static Tag<Block> CABLES = TagRegistry.block(new Identifier(MODID, "cables"));
+    public static TagKey<Block> CABLES = TagKey.of(Registry.BLOCK_KEY, identifierOf("cables"));
 }

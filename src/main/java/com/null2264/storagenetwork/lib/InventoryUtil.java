@@ -1,4 +1,4 @@
-package com.null2264.storagenetwork.api;
+package com.null2264.storagenetwork.lib;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

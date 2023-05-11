@@ -2,8 +2,8 @@ package com.null2264.storagenetwork.blockentity;
 
 import com.null2264.storagenetwork.Tags;
 import com.null2264.storagenetwork.ZiroStorageNetwork;
-import com.null2264.storagenetwork.api.DimPos;
-import com.null2264.storagenetwork.api.InventoryUtil;
+import com.null2264.storagenetwork.lib.DimPos;
+import com.null2264.storagenetwork.lib.InventoryUtil;
 import com.null2264.storagenetwork.blockentity.cables.CableBaseBlockEntity;
 import com.null2264.storagenetwork.registry.BlockEntityRegistry;
 import com.null2264.storagenetwork.registry.BlockRegistry;
@@ -40,8 +40,8 @@ public class MasterBlockEntity extends BlockEntity
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        return super.writeNbt(tag);
+    public void writeNbt(NbtCompound tag) {
+        super.writeNbt(tag);
     }
 
     private static Set<DimPos> getCables(DimPos dimPos) {
